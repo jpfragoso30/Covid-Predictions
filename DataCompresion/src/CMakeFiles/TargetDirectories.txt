@@ -1,0 +1,2 @@
+/Users/randymarsh/Documents/Clase_TDA/DataCompresion/src/CMakeFiles/rebuild_cache.dir
+/Users/randymarsh/Documents/Clase_TDA/DataCompresion/src/CMakeFiles/edit_cache.dir
