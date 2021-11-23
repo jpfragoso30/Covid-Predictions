@@ -139,9 +139,9 @@ ERRORS_CODE setColor(Config configApp){
         exit(EMPTY_STRUCT);
     }
 
-    #if DEBUG_MODE
+    
     puts(getColor(configApp));
-    #endif
+    
 
     return ERROR_OK;
 }
