@@ -21,6 +21,8 @@ typedef enum errors{
     CONFIG_FILE_NOT_FOUND,
     ERROR_CREATING_DIR,
     ERROR_PLOTING,
+    EMPTY_DIR,
+    
 }ERRORS_CODE;
 
 

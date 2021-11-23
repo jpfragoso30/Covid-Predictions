@@ -24,7 +24,10 @@ typedef enum states{
     PREDICCION,
     PLOTER,
     CONFIGURACIONES,
+    SUBMENUS,
     PLOTER_SELECT_FILE,
+    CONFIG_MENU,
+    COLORS_MENU,
     
 }STATES;
 

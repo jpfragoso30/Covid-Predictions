@@ -5,7 +5,6 @@ static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char* newFileName);
 static ERRORS_CODE ploterExistingFileState(PF pf);
 static ERRORS_CODE ploterState(PF pf);
 static ERRORS_CODE exitState(PF pf);
-static ERRORS_CODE changeConfigurationsState(PF pf);
 static ERRORS_CODE backToMainMenuState(PF pf);
 static ERRORS_CODE backToMainMenuState(PF pf);
 static ERRORS_CODE chanegSizeWindow(PF pf);
@@ -17,6 +16,8 @@ static ERRORS_CODE replotState(PF pf);
 static ERRORS_CODE reprintData(PF pf);
 static ERRORS_CODE ploterExistingFileStateMenu(PF pf);
 static ERRORS_CODE replotingExistingFileStateMenu(PF pf);
+static ERRORS_CODE configurationsMenuState(PF pf);
+static ERRORS_CODE colorsMenuState(PF pf);
 
 struct _PF{
     
@@ -70,7 +71,7 @@ PF initPF(uint8_t endValue, float width){
     newPF->functionByProcess[MENU_P][0] = &menuPrincipalState;
     newPF->functionByProcess[MENU_P][1] = &ploterState;
     newPF->functionByProcess[MENU_P][2] = &ploterExistingFileStateMenu;
-    newPF->functionByProcess[MENU_P][3] = &changeConfigurationsState;
+    newPF->functionByProcess[MENU_P][3] = &configurationsMenuState;
     newPF->functionByProcess[MENU_P][4] = &exitState;
 
     newPF->functionByProcess[PREDICCION][0] = &replotState;
@@ -82,13 +83,17 @@ PF initPF(uint8_t endValue, float width){
     newPF->functionByProcess[PLOTER][1] = &backToMainMenuState;
     newPF->functionByProcess[PLOTER][2] = &exitState;
 
-    newPF->functionByProcess[CONFIGURACIONES][0] = &chanegSizeWindow;
-    newPF->functionByProcess[CONFIGURACIONES][1] = &chanegColor;
+    newPF->functionByProcess[CONFIGURACIONES][0] = &colorsMenuState;
+    newPF->functionByProcess[CONFIGURACIONES][1] = &chanegSizeWindow;
     newPF->functionByProcess[CONFIGURACIONES][2] = &changeTypeMenu;
     newPF->functionByProcess[CONFIGURACIONES][3] = &backToMainMenuState;
     newPF->functionByProcess[CONFIGURACIONES][4] = &exitState;
 
-    newPF->functionByProcess[PLOTER_SELECT_FILE][0] = &ploterExistingFileState;
+    newPF->functionByProcess[SUBMENUS][0] = &ploterExistingFileState;
+    newPF->functionByProcess[SUBMENUS][1] = &configurationsMenuState;
+    newPF->functionByProcess[SUBMENUS][2] = &chanegColor;
+    newPF->functionByProcess[SUBMENUS][3] = &backToMainMenuState;
+    newPF->functionByProcess[SUBMENUS][4] = &exitState;
 
     return newPF;
 }
@@ -139,11 +144,16 @@ puts("restar PF STRCUT");
     pf->width = .100;
     pf->endValue = 10;
     
-    free(pf->fileNameCsv);
-    pf->fileNameCsv = "\0";
+    if(pf->fileNameCsv[0] != '\0'){
+        free(pf->fileNameCsv);
+        pf->fileNameCsv = "\0";
+    }
+        
 
-    free(pf->fileNamePlot);
-    pf->fileNamePlot = "\0";
+    if(pf->fileNamePlot[0] != '\0'){
+        free(pf->fileNamePlot);
+        pf->fileNamePlot = "\0";
+    }
 
     pf->tiempo = freeArray(pf->tiempo);
     pf->tiempo = createArray(pf->tiempo, pf->endValue);
@@ -441,12 +451,28 @@ ERRORS_CODE controlador(PF pf){
 
         case PLOTER_SELECT_FILE:
             if(pf->seleccion > 0 && pf->seleccion <= getNumOptions(pf->menu))
-                pf->functionByProcess[PLOTER_SELECT_FILE][0](pf);
+                pf->functionByProcess[SUBMENUS][0](pf);
             else
                 pf->functionByProcess[MENU_P][2](pf);
+            break;
 
-            break; 
-            
+        case CONFIG_MENU:
+            if(pf->seleccion >0 && pf->seleccion < 3)
+                pf->functionByProcess[SUBMENUS][1](pf);
+            else
+                pf->functionByProcess[MENU_P][3](pf);
+            break;
+
+        case COLORS_MENU:
+            if(pf->seleccion > 0 && pf->seleccion <= 4)
+                pf->functionByProcess[SUBMENUS][2](pf);
+            else if(pf->seleccion == 5)
+                pf->functionByProcess[SUBMENUS][3](pf);
+            else if(pf->seleccion == 6)
+                pf->functionByProcess[SUBMENUS][4](pf);
+            else
+                pf->functionByProcess[CONFIGURACIONES][0](pf);
+            break;
         default:
             pf->functionByProcess[MENU_P][0](pf);
             break;
@@ -544,6 +570,7 @@ static ERRORS_CODE reprintData(PF pf){
     return ERROR_OK;
 }
 
+
 static ERRORS_CODE exitState(PF pf){
     
     freePF(pf);
@@ -585,21 +612,40 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
     printHeader();
     printMenu(pf->menu);
 
-    setNextState(pf, PLOTER_SELECT_FILE);
+    setNextState(pf, SUBMENUS);
     return ERROR_OK;
 }
 
-static ERRORS_CODE changeConfigurationsState(PF pf){
 
-    puts("change Configurations");
+static ERRORS_CODE configurationsMenuState(PF pf){
+
+    setMenuOptions(pf->menu, MENU_CONFS);
+    printHeader();
+    printMenu(pf->menu);
+
+    setNextState(pf, CONFIGURACIONES);
+
     return ERROR_OK;
 }
+
+
+static ERRORS_CODE colorsMenuState(PF pf){
+    
+    setMenuOptions(pf->menu, MENU_COLORS);
+    printHeader();
+    printMenu(pf->menu);
+
+    setNextState(pf, COLORS_MENU);
+    return ERROR_OK;
+}
+
 
 
 static ERRORS_CODE backToMainMenuState(PF pf){
 
-   
+   puts("caca1");
     restartPF(pf);
+    puts("caca");
     restarCsvProcessing(pf->csv);
 
     setNextState(pf, MENU_P);
@@ -612,12 +658,24 @@ static ERRORS_CODE backToMainMenuState(PF pf){
 static ERRORS_CODE chanegSizeWindow(PF pf){
     
     puts("change size window");
+    setWidht(pf->configApp);
+    setHeight(pf->configApp);
+    reconfigureConfigFile(pf->configApp);
+    configCommandSize(pf->configApp);
+
+    setNextState(pf, CONFIG_MENU);
+    pf->seleccion = 10;
+
     return ERROR_OK;
 }
 
 static ERRORS_CODE chanegColor(PF pf){
 
     puts("change color");
+    setNumColor(pf->configApp, pf->seleccion - 1);
+    setColor(pf->configApp);
+    reconfigureConfigFile(pf->configApp);
+    pf->seleccion = 10;
     return ERROR_OK;
 }
 
@@ -625,6 +683,10 @@ static ERRORS_CODE chanegColor(PF pf){
 static ERRORS_CODE changeTypeMenu(PF pf){
 
     puts("change type Menu");
+    setTypeMenu(pf->configApp);
+    reconfigureConfigFile(pf->configApp);
+    setNextState(pf, CONFIG_MENU);
+    pf->seleccion = 10;
     return ERROR_OK;
 }
 

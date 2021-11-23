@@ -16,6 +16,8 @@ typedef enum menu{
 
     MENU_PRINCIPAL,
     MENU_PLOTER,
+    MENU_CONFS,
+    MENU_COLORS,
     MENU_REPLOT_FILE,
 
 }TYPEMENU;

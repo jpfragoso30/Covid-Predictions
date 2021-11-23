@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <string.h>
+#include <inttypes.h>
 #include "ini.h"
 #include "Errors.h"
 #include "FilesAndDirs.h"
@@ -26,10 +27,17 @@ Config initConfig(void);
 Config freeConfig(Config configToFree);
 
 ERRORS_CODE configureApp(Config configApp);
-
+ERRORS_CODE configCommandSize(Config configApp);
 
 ERRORS_CODE createConfigFile(void);
+ERRORS_CODE reconfigureConfigFile(Config configApp);
 
 char* getColor(Config configApp);
+
+
 ERRORS_CODE setColor(Config configApp);
+ERRORS_CODE setWidht(Config configApp);
+ERRORS_CODE setHeight(Config configApp);
+ERRORS_CODE setNumColor(Config configApp, uint8_t newColor);
+ERRORS_CODE setTypeMenu(Config configApp);
 #endif

@@ -99,19 +99,64 @@ ERRORS_CODE static setConfigurations(Config configApp){
 
     ini_free(configIni);
     setColor(configApp);
+    configCommandSize(configApp);
 
     checkDirs(configApp);
     return ERROR_OK;
 }
 
 
+ERRORS_CODE createConfigFile(void){
+    
+    FILE* configFile = openFile("config.ini", WRITE);
+    struct stat attrib;
+    char date[20];   
+    
+    stat("config.ini", &attrib);
+    strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
-char* createConfigCommandSize(Config configApp){
+    fprintf(configFile, "#CREATED AT: %s\n\n", date);
+	fprintf(configFile, "[app]\n");
+	fprintf(configFile, "menu=1\n");
+    fprintf(configFile, "%s\n", "width=42");
+    fprintf(configFile, "%s\n", "height=100");
+    fprintf(configFile, "%s\n", "color=1");
+
+    closeFile(configFile);
+
+    return ERROR_OK;
+}
+
+ERRORS_CODE reconfigureConfigFile(Config configApp){
+
+    FILE* configFile = openFile("config.ini", WRITE);
+    struct stat attrib;
+    char date[20];   
+    
+    stat("config.ini", &attrib);
+    strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
+
+    fprintf(configFile, "#CHANGE AT: %s\n\n", date);
+	fprintf(configFile, "[app]\n");
+	fprintf(configFile, "menu=%d\n", configApp->typeMenu);
+    fprintf(configFile, "width=%d\n", configApp->width);
+    fprintf(configFile, "height=%d\n", configApp->height);
+    fprintf(configFile, "color=%hhu\n", configApp->numColor);
+
+    closeFile(configFile);
+
+    return ERROR_OK;
+
+}
+
+ERRORS_CODE configCommandSize(Config configApp){
     
     char command[BUFSIZ];
     
-    sprintf(command, "resize -s %d %d", configApp->width, configApp->height);
-    return strdup(command);
+    sprintf(command, "resize -s %d %d", configApp->height, configApp->width);
+    system(command);
+
+    return ERROR_OK;
 }
 
 
@@ -130,7 +175,7 @@ char* getColor(Config configApp){
     return strdup(configListColors[configApp->numColor]);   
 }
 
-
+// SETTERS
 
 ERRORS_CODE setColor(Config configApp){
     
@@ -141,6 +186,66 @@ ERRORS_CODE setColor(Config configApp){
 
     
     puts(getColor(configApp));
+
+    return ERROR_OK;
+}
+
+ERRORS_CODE setWidht(Config configApp){
+
+    char line[256];
+    uint8_t temp;
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    puts("Enter a new Width for the window");
+    while(TRUE){
+        if (fgets(line, sizeof(line), stdin)) {
+            if (1 == sscanf(line, "%" SCNu8, &(temp))){
+                configApp->width = temp;
+                return ERROR_OK;
+            }
+        }
+    }
+}
+
+
+
+ERRORS_CODE setHeight(Config configApp){
+
+    char line[256];
+    uint8_t temp;
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    puts("Enter a new Height for the window");
+    while(TRUE){
+        if (fgets(line, sizeof(line), stdin)) {
+            if (1 == sscanf(line, "%" SCNu8, &(temp))){
+                configApp->height = temp;
+                return ERROR_OK;
+            }
+        }
+    }
+}
+
+
+ERRORS_CODE setTypeMenu(Config configApp){
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    if(configApp->typeMenu)
+        configApp->typeMenu = 0;
+    else
+        configApp->typeMenu = 1;
 
     return ERROR_OK;
 }
@@ -173,7 +278,20 @@ static ERRORS_CODE checkDirs(Config configApp){
 }
 
 
+ERRORS_CODE setNumColor(Config configApp, uint8_t newColor){
 
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    configApp->numColor = newColor;
+
+    return ERROR_OK;
+}
+
+
+//STATICS
 
 static ERRORS_CODE checkConfig(Config configApp){
 
@@ -190,23 +308,3 @@ static ERRORS_CODE checkConfig(Config configApp){
 }
 
 
-ERRORS_CODE createConfigFile(void){
-    
-    FILE* configFile = openFile("config.ini", WRITE);
-    struct stat attrib;
-    char date[10];   
-    
-    stat("config.ini", &attrib);
-    strftime(date, 10, "%d-%m-%y", localtime(&(attrib.st_ctime)));
-
-    fprintf(configFile, "#CREATED AT: %s\n\n", date);
-	fprintf(configFile, "[app]\n");
-	fprintf(configFile, "menu=1\n");
-    fprintf(configFile, "%s\n", "width=42");
-    fprintf(configFile, "%s\n", "height=100");
-    fprintf(configFile, "%s\n", "color=1");
-
-    closeFile(configFile);
-
-    return ERROR_OK;
-}
