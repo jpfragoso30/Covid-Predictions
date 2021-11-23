@@ -612,7 +612,7 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
     printHeader();
     printMenu(pf->menu);
 
-    setNextState(pf, SUBMENUS);
+    setNextState(pf, PLOTER_SELECT_FILE);
     return ERROR_OK;
 }
 
