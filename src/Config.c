@@ -141,7 +141,6 @@ ERRORS_CODE setColor(Config configApp){
 
     
     puts(getColor(configApp));
-    
 
     return ERROR_OK;
 }
@@ -183,6 +182,9 @@ static ERRORS_CODE checkConfig(Config configApp){
 
 	if(configApp->typeMenu > 1)
 		configApp->typeMenu = 1;
+
+    if(configApp->numColor > 3)
+        configApp->numColor = 3;
 
     return ERROR_OK;
 }
