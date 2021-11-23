@@ -1,6 +1,10 @@
-#CMAKE
+#CARPETAS
+/CsvResults
+/CsvEntr
 
-
+#ARCHIVOS QUE SE CREAN
+*.csv
+*.pdf
 
 # Prerequisites
 *.d

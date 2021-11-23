@@ -1,29 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "../libs/PF.h"
 
-#include "../libs/DataShell.h"
 
-int main(void){
- 
 
-    DataShell app = NULL;
-    Menu menuApp = NULL;
-    Config configApp = NULL;
+int main(){
 
-    configApp = initConfig();    
-    app = initDataShell();
-    menuApp = initMenu();
+    PF pf = initPF(10, .100);
 
-    configureApp(configApp);
 
-    while(1){
+    setMenuOptions(getMenuStruct(pf), MENU_PRINCIPAL);
 
-	    setMenuList(menuApp, getState(app));
-		if(getTypeMenu(configApp))
-            selectOption2(app, menuApp, configApp);
-		else
-            selectOption(app, menuApp);
-		clearBuffer();
-        dynamicController(app, menuApp, configApp);
+    
+
+    setTiempoCero(pf, 0);
+    setYCero(pf, 1);
+    
+
+    if(configureApp(getConfigStruct(pf)) != ERROR_OK)
+        restartApp(pf);
+    
+
+    while (TRUE){
+
+        controlador(pf);
+        setOptionFromState(pf);
     }
+    
+    
 
-      
+    return ERROR_OK;   
 }

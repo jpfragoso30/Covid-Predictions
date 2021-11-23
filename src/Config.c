@@ -1,45 +1,49 @@
 #include "../libs/Config.h"
 
-
-static ERROR_CODE setInitConfiguratinosApp(Config configApp);
-static void restartApp(Config configApp);
-static ERROR_CODE checkConfig(Config configApp);
+ERRORS_CODE static setConfigurations(Config configApp);
+static ERRORS_CODE checkConfig(Config configApp);
+static ERRORS_CODE checkDirs(Config configApp);
 
 
 struct _Config{
     
-    int width;
-    int height;
-	int numColor;
-	char* hexColor;
-	int typeMenu;
-    char* dirName;
+    uint8_t width, height;
+    uint8_t numColor;
+    uint8_t typeMenu;
+    const char* dirPloters;
+    const char* dirCsvsResults;
+    const char* dirsCsvEntrenamiento;
 
 };
 
 
-//Constructors
 Config initConfig(void){
-    
-    Config config = NULL;
-    config = malloc(sizeof(struct _Config));
 
-    if(config == NULL){
-        perror("ERROR::");
+    Config newConfig = NULL;
+    newConfig = malloc(sizeof(struct _Config));
+
+    if(!newConfig){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
 
-    config->width = -1;
-    config->height = -1;
-	config->numColor = -1;
-	config->typeMenu = -1;
-    return config;
+    newConfig->width = -1;
+    newConfig->height = -1;
+    newConfig->typeMenu = 0;
+    newConfig->dirPloters = "PlotersResult";
+    newConfig->dirCsvsResults = "CsvResults";
+    newConfig->dirsCsvEntrenamiento = "CsvEntr";
+
+    return newConfig;
 }
 
 
-//Destructors
 Config freeConfig(Config configToFree){
-    
+
+    #if DEBUG_MODE
+    puts("free Config Struct");
+    #endif
+
     free(configToFree);
     configToFree = NULL;
 
@@ -47,66 +51,132 @@ Config freeConfig(Config configToFree){
 }
 
 
-//FUNCIONES PRINCIPALES
-
-void configureApp(Config configApp){
-
-    if(setInitConfiguratinosApp(configApp) != ERROR_OK)
-        restartApp(configApp);
-
-    system(CLEAN);
-    system(createConfigCommandSize(configApp));
-    printf("%s", configApp->hexColor);
+ERRORS_CODE configureApp(Config configApp){
     
+    #if DEBUG_MODE
+    puts("Config APP!");
+    #endif
+
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    if(setConfigurations(configApp) != ERROR_OK)
+        return CONFIG_ERROR;
+
+    
+    return ERROR_OK;
 }
 
 
+ERRORS_CODE static setConfigurations(Config configApp){
 
-//STATICS
-static ERROR_CODE setInitConfiguratinosApp(Config configApp){
-    ini_t* config = NULL;
+    ini_t* configIni = NULL;
     
-    config = ini_load("config.ini");
-    if(config == NULL)
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    
+    configIni = ini_load("config.ini");
+    if(configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
-	ini_sget(config, "app", "menu", "%d", &configApp->typeMenu);
-    ini_sget(config, "app", "width", "%d", &configApp->width);
-    ini_sget(config, "app", "height", "%d", &configApp->height);
-    ini_sget(config, "app", "color", "%d", &configApp->numColor);
+	ini_sget(configIni, "app", "menu", "%d", &configApp->typeMenu);
+    ini_sget(configIni, "app", "width", "%d", &configApp->width);
+    ini_sget(configIni, "app", "height", "%d", &configApp->height);
+    ini_sget(configIni, "app", "color", "%d", &configApp->numColor);
 
 
 
     if(checkConfig(configApp) == CONFIG_ERROR){       
-        ini_free(config);
+        ini_free(configIni);
         return CONFIG_ERROR;
     }
 
-    ini_free(config);
+    ini_free(configIni);
     setColor(configApp);
+
+    checkDirs(configApp);
+    return ERROR_OK;
+}
+
+
+
+char* createConfigCommandSize(Config configApp){
+    
+    char command[BUFSIZ];
+    
+    sprintf(command, "resize -s %d %d", configApp->width, configApp->height);
+    return strdup(command);
+}
+
+
+
+
+char* getColor(Config configApp){
+    
+    const char* configListColors[] = {WHITE,  RED, GREEN, CYAN};
+    
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+        
+        
+    return strdup(configListColors[configApp->numColor]);   
+}
+
+
+
+ERRORS_CODE setColor(Config configApp){
+    
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    #if DEBUG_MODE
+    puts(getColor(configApp));
+    #endif
+
+    return ERROR_OK;
+}
+
+static ERRORS_CODE checkDirs(Config configApp){
+
+    DIR* dirs = NULL;
+
+    dirs = openConfigDir(configApp->dirCsvsResults);
+    if(exisistConfigDir(dirs) != ERROR_OK){
+        createDir(configApp->dirCsvsResults);
+    }else
+        closedir(dirs);
+
+
+    dirs = openConfigDir(configApp->dirPloters);
+    if(exisistConfigDir(dirs) != ERROR_OK){
+        createDir(configApp->dirPloters);
+    }else
+        closedir(dirs);
+    
+
+    dirs = openConfigDir(configApp->dirsCsvEntrenamiento);
+    if(exisistConfigDir(dirs) != ERROR_OK){
+        createDir(configApp->dirsCsvEntrenamiento);
+    }else
+        closedir(dirs);
 
     return ERROR_OK;
 }
 
 
-static void restartApp(Config configApp){
-    
-    FILE* configFile = NULL;
-    configFile = newFile("config.ini", WRITE);
-
-    configApp = freeConfig(configApp);
-    configFile = createConfigFile(configFile);
-    closeFile(configFile);
-    
-    puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
-    getchar();
-
-    system("./myapp.out");
-    exit(CONFIG_FILE_NOT_FOUND);
-}
 
 
-static ERROR_CODE checkConfig(Config configApp){
+static ERRORS_CODE checkConfig(Config configApp){
 
     if(configApp->numColor < 0 || configApp->height < 0 || configApp->width < 0 || configApp->typeMenu < 0)
         return CONFIG_ERROR;
@@ -118,119 +188,23 @@ static ERROR_CODE checkConfig(Config configApp){
 }
 
 
-char* createConfigCommandSize(Config configApp){
+ERRORS_CODE createConfigFile(void){
     
-    char command[BUFSIZ] = "resize -s ";
-    char number[20];
+    FILE* configFile = openFile("config.ini", WRITE);
+    struct stat attrib;
+    char date[10];   
     
-    sprintf(number, "%d ", configApp->width);
-    strcat(command, number);
-    
-	sprintf(number, "%d ", configApp->height);
-    strcat(command, number);
+    stat("config.ini", &attrib);
+    strftime(date, 10, "%d-%m-%y", localtime(&(attrib.st_ctime)));
 
-    return strdup(command);
-}
+    fprintf(configFile, "#CREATED AT: %s\n\n", date);
+	fprintf(configFile, "[app]\n");
+	fprintf(configFile, "menu=1\n");
+    fprintf(configFile, "%s\n", "width=42");
+    fprintf(configFile, "%s\n", "height=100");
+    fprintf(configFile, "%s\n", "color=1");
 
-
-
-//SETTERS
-
-ERROR_CODE setNumColor(Config confingApp, int newNumColor){
-    
-    if(confingApp != NULL)
-        confingApp->numColor = newNumColor;
+    closeFile(configFile);
 
     return ERROR_OK;
 }
-
-ERROR_CODE setColor(Config configApp){
-    
-    
-    const char* configListColors[] = { "\x1B[0m",  "\x1B[31m", "\x1B[32m", "\033[36m"};
-    
-    if(configApp != NULL)
-        configApp->hexColor = strdup(configListColors[configApp->numColor]);
-    
-    return ERROR_OK;  
-}
-
-
-ERROR_CODE setWidth(Config configApp, int newWidth){
-    
-    if(newWidth  < 0)
-        newWidth = 0;
-
-    if(configApp != NULL)
-        configApp->width = newWidth;
-
-    return ERROR_OK;
-}
-
-
-
-ERROR_CODE setHeight(Config configApp, int newHeight){
-    
-    if(newHeight  < 0)
-        newHeight = 0;
-
-    if(configApp != NULL)
-        configApp->height = newHeight;
-
-    return ERROR_OK;
-}
-
-
-ERROR_CODE setMenuType(Config configApp){
-	if(configApp != NULL){
-		if(configApp->typeMenu == 1)
-			configApp->typeMenu = 0;
-		else if(configApp->typeMenu == 0)
-			configApp->typeMenu = 1;
-	}
-
-	return ERROR_OK;
-}
-
-
-
-//GETTERS
-int getWidth(Config configApp){
-    return configApp->width;
-}
-
-int getHeight(Config configApp){
-    return configApp->height;
-}
-
-int getNumColor(Config configApp){
-    return configApp->numColor;
-}
-
-char* getColor(Config configApp){
-    return configApp->hexColor;
-}
-
-int getTypeMenu(Config configApp){
-	return configApp->typeMenu;
-}
-
-char* getColorSelection(Config configApp){
-	const char* configListColors[] = { "\x1B[0m",  "\x1B[31m", "\x1B[32m", "\033[36m"};
-
-	switch (configApp->numColor) {
-		case 0:
-			return strdup(configListColors[1]);
-		case 1:
-			return strdup(configListColors[0]);
-		case 2:
-			return strdup(configListColors[3]);
-		case 3:
-			return strdup(configListColors[2]);
-	}
-
-	return strdup(configListColors[0]);
-}
-
-
-

@@ -34,4 +34,3 @@ obj:
 .PHONY: clean
 clean:
 	$(RM) $(DELOBJ) $(APPNAME)
-

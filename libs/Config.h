@@ -1,38 +1,35 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "Libs.h"
-#include "Files.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string.h>
 #include "ini.h"
+#include "Errors.h"
+#include "FilesAndDirs.h"
+
+
+#define WHITE "\x1B[0m" 
+#define RED "\x1B[31m" 
+#define GREEN "\x1B[32m" 
+#define CYAN "\033[36m"
+
 
 typedef struct _Config* Config;
 
-
-//Constructor
 Config initConfig(void);
 
-
-//Destructors
 Config freeConfig(Config configToFree);
 
+ERRORS_CODE configureApp(Config configApp);
 
 
-//FUNCIONES PRINCIPALES
-void configureApp(Config configApp);
-char* createConfigCommandSize(Config configApp);
+ERRORS_CODE createConfigFile(void);
 
-//SETTERS
-ERROR_CODE setColor(Config configApp);
-ERROR_CODE setNumColor(Config confingApp, int newNumColor);
-ERROR_CODE setWidth(Config configApp, int newWidth);
-ERROR_CODE setHeight(Config configApp, int newHeight);
-ERROR_CODE setMenuType(Config configApp);
-
-//GETTERS
-int getWidth(Config configApp);
-int getHeight(Config configApp);
-int getNumColor(Config configApp);
 char* getColor(Config configApp);
-int getTypeMenu(Config configApp);
-char* getColorSelection(Config configApp);
+ERRORS_CODE setColor(Config configApp);
 #endif

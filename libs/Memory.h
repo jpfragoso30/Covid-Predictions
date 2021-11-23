@@ -1,24 +1,41 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include "Libs.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include "Errors.h"
 
 
-//CONSTRUCTORS
-char*** createMatrixString(char*** matrixString, size_t rows, size_t columns);
-char** createListString(char** listStirng, size_t columns);
+//MATRIX
+float** createMatrix(float** matrix, uint8_t rows, uint8_t columns);
+float** freeMatrix(float** matrix, uint8_t rows);
 
 
-//FREES
-char*** freeMatrixString(char*** matrixString, size_t rows);
-char** freeListString(char** listStirng);
+//ARRAY
+float* createArray(float* array, uint8_t columns);
+float* freeArray(float* array);
 
 
-//SETTERS
-char*** setMoreRows(char*** matrixString, size_t rows, size_t columns);
-char** setMoreColumns(char** listString, size_t columns);
-char* setSizeColumn(char* columnData, char* word);
+//MATRIX STRING
+char*** createStringMatrix(char*** stringMatrix, uint8_t rows, uint8_t columns);
+char*** freeMatrixString(char*** matrixString, uint8_t rows);
 
 
+//STRING ARRAY
+char** createStringArray(char** stringArray, uint8_t columns);
+char** freeStringArray(char** stringArray);
 
-#endif 
+
+//STRING
+char* createStrignSpace(char* string, const char* word);
+
+
+// SETTERS
+float** setMoreRows(float** matrix, uint8_t rows);
+float* setMoreColumns(float* array, uint8_t columns);
+char*** setMoreRowsString(char*** stringMatrix, uint8_t rows, uint8_t columns);
+char** setMoreColumnsString(char** stringArray, uint8_t columns);
+
+#endif
