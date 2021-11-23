@@ -20,11 +20,12 @@ int main(){
     if(configureApp(getConfigStruct(pf)) != ERROR_OK)
         restartApp(pf);
     
-
+    
     while (TRUE){
 
         controlador(pf);
-        setOptionFromState(pf);
+        if(getTypeMenu(getConfigStruct(pf)) == TRUE)
+            setOptionFromState(pf);
     }
     
     

@@ -33,7 +33,8 @@ ERRORS_CODE createConfigFile(void);
 ERRORS_CODE reconfigureConfigFile(Config configApp);
 
 char* getColor(Config configApp);
-
+char* getColorSelection(Config configApp);
+uint8_t getTypeMenu(Config configApp);
 
 ERRORS_CODE setColor(Config configApp);
 ERRORS_CODE setWidht(Config configApp);

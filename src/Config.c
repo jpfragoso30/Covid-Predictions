@@ -7,7 +7,8 @@ static ERRORS_CODE checkDirs(Config configApp);
 
 struct _Config{
     
-    uint8_t width, height;
+    uint8_t width; 
+    uint8_t height;
     uint8_t numColor;
     uint8_t typeMenu;
     const char* dirPloters;
@@ -85,11 +86,11 @@ ERRORS_CODE static setConfigurations(Config configApp){
     if(configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
-	ini_sget(configIni, "app", "menu", "%d", &configApp->typeMenu);
-    ini_sget(configIni, "app", "width", "%d", &configApp->width);
-    ini_sget(configIni, "app", "height", "%d", &configApp->height);
-    ini_sget(configIni, "app", "color", "%d", &configApp->numColor);
-
+    
+	ini_sget(configIni, "app", "menu", "%hhu", &configApp->typeMenu);
+    ini_sget(configIni, "app", "width", "%hhu", &configApp->width);
+    ini_sget(configIni, "app", "height", "%hhu", &configApp->height);
+    ini_sget(configIni, "app", "color", "%hhu", &configApp->numColor);
 
 
     if(checkConfig(configApp) == CONFIG_ERROR){       
@@ -173,6 +174,51 @@ char* getColor(Config configApp){
         
         
     return strdup(configListColors[configApp->numColor]);   
+}
+
+
+
+char* getColorSelection(Config configApp){
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    switch (configApp->numColor){
+        
+        case 0:
+            return RED;
+            break;
+            
+        case 1:
+            return WHITE;
+            break;
+
+        case 2:
+            return CYAN;
+            break;
+
+        case 3:
+            return GREEN;
+            break;
+
+        default:
+            return CYAN;
+            break;
+    }
+}
+
+
+
+uint8_t getTypeMenu(Config configApp){
+
+    if(!configApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->typeMenu;
 }
 
 // SETTERS
