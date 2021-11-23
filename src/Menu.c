@@ -93,6 +93,8 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu){
 
     menu->menuOptions[menu->numOptions] = NULL;
 
+    if(menu->numOptions == 0)
+        return EMPTY_DIR;
 
     return ERROR_OK;
 }
@@ -133,6 +135,7 @@ void printMenu(Menu menuApp){
         printf("\t\t\t[%d]%s\n", i + 1, menuApp->menuOptions[i]);
 
 }
+
 
 /*void updateMenu(Menu menuApp, Config configApp){
 

@@ -574,8 +574,15 @@ static ERRORS_CODE ploterExistingFileState(PF pf){
 
 static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
 
+
+    if(setMenuOptions(pf->menu, MENU_REPLOT_FILE) == EMPTY_DIR){
+        setNextState(pf, MENU_P);
+        pf->seleccion = -1;
+        setMenuOptions(pf->menu, MENU_PRINCIPAL);
+        return EMPTY_DIR;
+    }
+
     printHeader();
-    setMenuOptions(pf->menu, MENU_REPLOT_FILE);
     printMenu(pf->menu);
 
     setNextState(pf, PLOTER_SELECT_FILE);
