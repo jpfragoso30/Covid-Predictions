@@ -440,7 +440,7 @@ ERRORS_CODE controlador(PF pf){
             break;
 
         case PLOTER_SELECT_FILE:
-            if(pf->seleccion > 0 && pf->seleccion < getNumOptions(pf->menu))
+            if(pf->seleccion > 0 && pf->seleccion <= getNumOptions(pf->menu))
                 pf->functionByProcess[PLOTER_SELECT_FILE][0](pf);
             else
                 pf->functionByProcess[MENU_P][2](pf);
