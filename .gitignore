@@ -5,6 +5,7 @@
 #ARCHIVOS QUE SE CREAN
 *.csv
 *.pdf
+config.ini
 
 # Prerequisites
 *.d

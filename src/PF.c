@@ -18,6 +18,13 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf);
 static ERRORS_CODE replotingExistingFileStateMenu(PF pf);
 static ERRORS_CODE configurationsMenuState(PF pf);
 static ERRORS_CODE colorsMenuState(PF pf);
+static ERRORS_CODE setDynamicOption(PF pf, char newOption);
+static void dinamicMenuControler(PF pf);
+static void dinamicMenuController(PF pf);
+static void clearBuffer(void);
+
+
+
 
 struct _PF{
     
@@ -29,7 +36,7 @@ struct _PF{
     char* fileNameCsv;
 
     STATES nextState;
-    uint8_t seleccion;
+    int8_t seleccion;
 
     ERRORS_CODE(*functionByProcess[5][5])(PF pf);
 
@@ -382,14 +389,13 @@ float getWidth(PF pf){
 
 
 
-
 Menu getMenuStruct(PF pf){
 
     if(!pf){
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
-
+    
     return pf->menu;
 }
 
@@ -502,8 +508,8 @@ void restartApp(PF pf){
 
 static ERRORS_CODE menuPrincipalState(PF pf){
     
-    printHeader();
-    printMenu(pf->menu);
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
 
     return ERROR_OK;
 }
@@ -517,14 +523,14 @@ static ERRORS_CODE ploterState(PF pf){
     writeCsv(pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
     plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
 
-    printHeader();
     
-    printResultData(pf->csv, pf->fileNameCsv);
+    
     
     
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER);
-    printMenu(pf->menu);
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
 
     return ERROR_OK;
 }
@@ -548,14 +554,15 @@ static ERRORS_CODE replotState(PF pf){
     writeCsv(pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
     plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
 
-    printHeader();
+   
     
-    printResultData(pf->csv, pf->fileNameCsv);
+    //printResultData(pf->csv, pf->fileNameCsv);
     
     
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER);
-    printMenu(pf->menu);
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
 
     return ERROR_OK;
 }
@@ -563,10 +570,7 @@ static ERRORS_CODE replotState(PF pf){
 
 static ERRORS_CODE reprintData(PF pf){
 
-    printHeader();
-    printResultData(pf->csv, pf->fileNameCsv);
-    printMenu(pf->menu);
-
+    printResultData(pf->csv, pf->fileNameCsv);    
     return ERROR_OK;
 }
 
@@ -586,13 +590,14 @@ static ERRORS_CODE ploterExistingFileState(PF pf){
         plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);;
     }
 
-    printHeader();
+    
     puts(pf->fileNameCsv);
-    printResultData(pf->csv, pf->fileNameCsv);
+    //printResultData(pf->csv, pf->fileNameCsv);
 
     setMenuOptions(pf->menu, MENU_PLOTER);
     setNextState(pf, PLOTER);
-    printMenu(pf->menu);   
+    //printMenu(pf->menu);
+    dinamicMenuController(pf); 
     
 
     return ERROR_OK;
@@ -609,8 +614,8 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
         return EMPTY_DIR;
     }
 
-    printHeader();
-    printMenu(pf->menu);
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
 
     setNextState(pf, PLOTER_SELECT_FILE);
     return ERROR_OK;
@@ -620,9 +625,8 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
 static ERRORS_CODE configurationsMenuState(PF pf){
 
     setMenuOptions(pf->menu, MENU_CONFS);
-    printHeader();
-    printMenu(pf->menu);
-
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
     setNextState(pf, CONFIGURACIONES);
 
     return ERROR_OK;
@@ -632,8 +636,8 @@ static ERRORS_CODE configurationsMenuState(PF pf){
 static ERRORS_CODE colorsMenuState(PF pf){
     
     setMenuOptions(pf->menu, MENU_COLORS);
-    printHeader();
-    printMenu(pf->menu);
+    //printMenu(pf->menu);
+    dinamicMenuController(pf);
 
     setNextState(pf, COLORS_MENU);
     return ERROR_OK;
@@ -643,9 +647,7 @@ static ERRORS_CODE colorsMenuState(PF pf){
 
 static ERRORS_CODE backToMainMenuState(PF pf){
 
-   puts("caca1");
     restartPF(pf);
-    puts("caca");
     restarCsvProcessing(pf->csv);
 
     setNextState(pf, MENU_P);
@@ -691,8 +693,69 @@ static ERRORS_CODE changeTypeMenu(PF pf){
 }
 
 
-/*static void clearBuffer(void){
+static void dinamicMenuControler(PF pf){
+
+    char input = '\0';
+	uint8_t firstInput = TRUE;
+    pf->seleccion = 0;
+    do{
+        printHeader();
+        setDynamicOption(pf, input);
+
+        if(pf->nextState == PLOTER || pf->nextState == PREDICCION)
+            reprintData(pf);
+        
+        setMenuSelection(pf->menu, pf->seleccion);
+        updateMenu(pf->menu, getColor(pf->configApp), getColorSelection(pf->configApp));
+
+		if(firstInput)
+			firstInput = FALSE;
+		else
+			clearBuffer();
+
+    }while((input = getchar()) != 'x' && input != 'X' && input != EOF);
+    clearBuffer();
+    pf->seleccion ++;
+}
+
+
+static ERRORS_CODE setDynamicOption(PF pf, char newOption){
+
+    newOption = tolower(newOption);
+    
+    if(newOption == 'w')
+        pf->seleccion --;
+    else if(newOption == 's')
+        pf->seleccion ++;
+
+
+    if(pf->seleccion >= getNumOptions(pf->menu))
+        pf->seleccion = 0;
+    else if(pf->seleccion < 0)
+        pf->seleccion = getNumOptions(pf->menu) - 1;
+
+    return ERROR_OK;
+}
+
+
+static void dinamicMenuController(PF pf){
+
+    printHeader();
+    if(getTypeMenu(pf->configApp)){
+
+        if(pf->nextState == PREDICCION || pf->nextState == PLOTER)
+            printResultData(pf->csv, pf->fileNameCsv);
+
+        printMenu(pf->menu);
+    }
+    else{
+        dinamicMenuControler(pf);
+    }
+       
+}
+
+static void clearBuffer(void){
 
 	char input;
 	while((input = getchar()) != '\n');
-}*/
+}

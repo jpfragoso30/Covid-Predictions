@@ -99,7 +99,17 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu){
     return ERROR_OK;
 }
 
+ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection){
+    
+    if(!menuApp){
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
 
+    menuApp->optionSelected = newSelection;
+
+    return ERROR_OK;
+}
 
 // GETTERS
 
@@ -137,20 +147,20 @@ void printMenu(Menu menuApp){
 }
 
 
-/*void updateMenu(Menu menuApp, Config configApp){
+void updateMenu(Menu menuApp, char* color, char* colorSelection){
 
 	puts("");
-    for(int i = 0; menuApp->menuOptions[i] != (void*)0; i++){
+    for(uint8_t i = 0; menuApp->menuOptions[i] != (void*)0; i++){
         
-        if(menuApp->option == i)
-            printf("\t\t\t%s[██] %s\n", getColorSelection(configApp), menuApp->menuOptions[i]);
+        if(menuApp->optionSelected == i)
+            printf("\t\t\t%s[██] %s\n", colorSelection, menuApp->menuOptions[i]);
         else 
-            printf("\t\t\t%s[  ] %s\n", getColor(configApp), menuApp->menuOptions[i]);
+            printf("\t\t\t%s[  ] %s\n", color, menuApp->menuOptions[i]);
     }
 
-	printf("\n\n\n\n %sTO MOVE UP PRESS [W/w], TO MODE DOWN [S/s] AND TO SELECT OPTION PRESS [X/x]\n", getColorSelection(configApp));
-	printf("%s", getColor(configApp));
-}*/
+	printf("\n\n\n\n %sTO MOVE UP PRESS [W/w], TO MODE DOWN [S/s] AND TO SELECT OPTION PRESS [X/x]\n", colorSelection);
+	puts(color);
+}
 
 
 
@@ -197,21 +207,6 @@ static ERRORS_CODE createMenuFiles(Menu menu){
         exit(INVALID_DIR);
     }
 
-
-    /*for(uint8_t i = 0; (en = readdir(dr)) != NULL; i++, menu->numOptions++){
-    
-        if(validateFile(en->d_name) == ERROR_OK){
-            
-            if(i >= menu->columns){
-                menu->menuOptions = setMoreColumnsString(menu->menuOptions, menu->columns);
-                menu->columns *= 2;
-            }
-            
-            menu->menuOptions[i] = createStrignSpace(menu->menuOptions[i], en->d_name);
-            menu->menuOptions[i] = strdup(en->d_name);
-        }
-            
-    }*/
 
     while ((en = readdir(dr)) != NULL){
 

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <ctype.h>
 #include "Errors.h"
 #include "CsvProcessing.h"
 #include "Memory.h"
@@ -64,4 +65,5 @@ ERRORS_CODE controlador(PF pf);
 
 //REINICIA LA APP
 void restartApp(PF pf);
+
 #endif
