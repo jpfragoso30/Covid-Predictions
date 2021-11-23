@@ -88,10 +88,10 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu){
 
             menu->menuOptions[i] = createStrignSpace(menu->menuOptions[i], list[typemenu][i]);
             menu->menuOptions[i] = strdup(list[typemenu][i]);
-        }  
-
-        menu->menuOptions[menu->numOptions] = NULL;   
+        }     
     } 
+
+    menu->menuOptions[menu->numOptions] = NULL;
 
 
     return ERROR_OK;
