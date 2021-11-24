@@ -64,6 +64,5 @@ ERRORS_CODE controlador(PF pf);
 
 
 //REINICIA LA APP
-void restartApp(PF pf);
-
+void restartApp(PF pf, char* nameExcutable);
 #endif

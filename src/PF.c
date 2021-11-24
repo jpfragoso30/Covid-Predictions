@@ -491,7 +491,7 @@ ERRORS_CODE controlador(PF pf){
 
 
 // REINICIA APP
-void restartApp(PF pf){
+void restartApp(PF pf, char* nameExcutable){
 
     createConfigFile();
     freePF(pf);
@@ -499,7 +499,8 @@ void restartApp(PF pf){
     puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
     getchar();
 
-    system("./myapp.out");
+    puts(nameExcutable);
+    system(nameExcutable);
     exit(CONFIG_FILE_NOT_FOUND);
 }
 

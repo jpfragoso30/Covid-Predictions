@@ -4,7 +4,7 @@
 
 
 
-int main(){
+int main(int argc, char* argv[]){
 
     PF pf = initPF(10, .100);
 
@@ -18,7 +18,7 @@ int main(){
     
 
     if(configureApp(getConfigStruct(pf)) != ERROR_OK)
-        restartApp(pf);
+        restartApp(pf, argv[0]);
     
     
     while (TRUE){
