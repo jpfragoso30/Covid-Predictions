@@ -1,30 +1,32 @@
 #include "../libs/Memory.h"
 
-static ERRORS_CODE checkColumns(float* array);
-static ERRORS_CODE checkRows(float** matrix);
-static ERRORS_CODE checkRowsString(char*** stringMatrix);
-static ERRORS_CODE checkColumnsString(char** stringArray);
-static ERRORS_CODE checkString(char* string);
+static ERRORS_CODE checkColumns(float *array);
+static ERRORS_CODE checkRows(float **matrix);
+static ERRORS_CODE checkRowsString(char ***stringMatrix);
+static ERRORS_CODE checkColumnsString(char **stringArray);
+static ERRORS_CODE checkString(char *string);
 
+float **createMatrix(float **matrix, uint8_t rows, uint8_t columns)
+{
 
-float** createMatrix(float** matrix, uint8_t rows, uint8_t columns){
-
-    matrix = (float**) calloc(rows, sizeof(float*));
+    matrix = (float **)calloc(rows, sizeof(float *));
     checkRows(matrix);
 
-    for(uint8_t i = 0; i < rows; i++){
+    for (uint8_t i = 0; i < rows; i++)
+    {
 
-        matrix[i] = (float*) calloc(columns, sizeof(float));
+        matrix[i] = (float *)calloc(columns, sizeof(float));
         checkColumns(matrix[i]);
     }
 
     return matrix;
 }
 
+float **freeMatrix(float **matrix, uint8_t rows)
+{
 
-float** freeMatrix(float** matrix, uint8_t rows){
-
-    for(uint8_t i = 0; i <= rows; i++){
+    for (uint8_t i = 0; i <= rows; i++)
+    {
         free(matrix[i]);
         matrix[i] = NULL;
     }
@@ -35,17 +37,17 @@ float** freeMatrix(float** matrix, uint8_t rows){
     return matrix;
 }
 
+float *createArray(float *array, uint8_t columns)
+{
 
-float* createArray(float* array, uint8_t columns){
-
-    array = (float*) calloc(columns, sizeof(float));
+    array = (float *)calloc(columns, sizeof(float));
     checkColumns(array);
 
     return array;
 }
 
-
-float* freeArray(float* array){
+float *freeArray(float *array)
+{
 
     free(array);
     array = NULL;
@@ -53,34 +55,35 @@ float* freeArray(float* array){
     return array;
 }
 
+char ***createStringMatrix(char ***stringMatrix, uint8_t rows, uint8_t columns)
+{
 
-char*** createStringMatrix(char*** stringMatrix, uint8_t rows, uint8_t columns){
-
-    stringMatrix = calloc(rows, sizeof(char**));
+    stringMatrix = calloc(rows, sizeof(char **));
     checkRowsString(stringMatrix);
 
-    for(uint8_t i = 0; i < rows; i++){
+    for (uint8_t i = 0; i < rows; i++)
+    {
         stringMatrix[i] = createStringArray(stringMatrix[i], columns);
         checkColumnsString(stringMatrix[i]);
     }
-    
 
     return stringMatrix;
 }
 
+char **createStringArray(char **stringArray, uint8_t columns)
+{
 
-char** createStringArray(char** stringArray, uint8_t columns){
-
-    stringArray = calloc(columns, sizeof(char*));
+    stringArray = calloc(columns, sizeof(char *));
     checkColumnsString(stringArray);
 
     return stringArray;
 }
 
+char ***freeMatrixString(char ***matrixString, uint8_t rows)
+{
 
-char*** freeMatrixString(char*** matrixString, uint8_t rows){
-
-    for(uint8_t i = 0; i < rows; i++){
+    for (uint8_t i = 0; i < rows; i++)
+    {
 
         free(matrixString[i]);
         matrixString[i] = NULL;
@@ -92,7 +95,8 @@ char*** freeMatrixString(char*** matrixString, uint8_t rows){
     return matrixString;
 }
 
-char** freeStringArray(char** stringArray){
+char **freeStringArray(char **stringArray)
+{
 
     free(stringArray);
     stringArray = NULL;
@@ -100,9 +104,8 @@ char** freeStringArray(char** stringArray){
     return stringArray;
 }
 
-
-
-char* createStrignSpace(char* string, const char* word){
+char *createStrignSpace(char *string, const char *word)
+{
 
     string = calloc(strlen(word), sizeof(char));
     checkString(string);
@@ -110,25 +113,24 @@ char* createStrignSpace(char* string, const char* word){
     return string;
 }
 
-
-
-
 // Setters
-float** setMoreRows(float** matrix, uint8_t rows){
+float **setMoreRows(float **matrix, uint8_t rows)
+{
 
-    matrix = (float**) realloc(matrix, sizeof(float*) * (rows * 2));
+    matrix = (float **)realloc(matrix, sizeof(float *) * (rows * 2));
     checkRows(matrix);
 
     return matrix;
 }
 
+char ***setMoreRowsString(char ***stringMatrix, uint8_t rows, uint8_t columns)
+{
 
-char*** setMoreRowsString(char*** stringMatrix, uint8_t rows, uint8_t columns){
-    
-    stringMatrix = realloc(stringMatrix, sizeof(char*) * (columns * 2));
-    checkRowsString(stringMatrix);    
+    stringMatrix = realloc(stringMatrix, sizeof(char *) * (columns * 2));
+    checkRowsString(stringMatrix);
 
-    for(uint8_t i = rows; i < rows * 2; i++){
+    for (uint8_t i = rows; i < rows * 2; i++)
+    {
 
         stringMatrix[i] = createStringArray(stringMatrix[i], columns);
         checkColumnsString(stringMatrix[i]);
@@ -137,8 +139,8 @@ char*** setMoreRowsString(char*** stringMatrix, uint8_t rows, uint8_t columns){
     return stringMatrix;
 }
 
-
-float* setMoreColumns(float* array, uint8_t columns){
+float *setMoreColumns(float *array, uint8_t columns)
+{
 
     array = realloc(array, sizeof(float) * (columns * 2));
     checkColumns(array);
@@ -146,23 +148,22 @@ float* setMoreColumns(float* array, uint8_t columns){
     return array;
 }
 
+char **setMoreColumnsString(char **stringArray, uint8_t columns)
+{
 
-
-
-char** setMoreColumnsString(char** stringArray, uint8_t columns){
-    
-    stringArray = realloc(stringArray, sizeof(char*) * (columns * 2));
+    stringArray = realloc(stringArray, sizeof(char *) * (columns * 2));
     checkColumnsString(stringArray);
 
     return stringArray;
 }
 
-
 //Statics
 
-static ERRORS_CODE checkRows(float** matrix){
+static ERRORS_CODE checkRows(float **matrix)
+{
 
-    if(!matrix){
+    if (!matrix)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -170,9 +171,11 @@ static ERRORS_CODE checkRows(float** matrix){
     return ERROR_OK;
 }
 
-static ERRORS_CODE checkRowsString(char*** stringMatrix){
+static ERRORS_CODE checkRowsString(char ***stringMatrix)
+{
 
-    if(!stringMatrix){
+    if (!stringMatrix)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -180,10 +183,11 @@ static ERRORS_CODE checkRowsString(char*** stringMatrix){
     return ERROR_OK;
 }
 
+static ERRORS_CODE checkColumns(float *array)
+{
 
-static ERRORS_CODE checkColumns(float* array){
-
-    if(!array){
+    if (!array)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -191,10 +195,11 @@ static ERRORS_CODE checkColumns(float* array){
     return ERROR_OK;
 }
 
+static ERRORS_CODE checkColumnsString(char **stringArray)
+{
 
-static ERRORS_CODE checkColumnsString(char** stringArray){
-
-    if(!stringArray){
+    if (!stringArray)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -202,10 +207,11 @@ static ERRORS_CODE checkColumnsString(char** stringArray){
     return ERROR_OK;
 }
 
+static ERRORS_CODE checkString(char *string)
+{
 
-static ERRORS_CODE checkString(char* string){
-    
-    if(!string){
+    if (!string)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }

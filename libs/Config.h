@@ -13,14 +13,12 @@
 #include "Errors.h"
 #include "FilesAndDirs.h"
 
-
-#define WHITE "\x1B[0m" 
-#define RED "\x1B[31m" 
-#define GREEN "\x1B[32m" 
+#define WHITE "\x1B[0m"
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
 #define CYAN "\033[36m"
 
-
-typedef struct _Config* Config;
+typedef struct _Config *Config;
 
 Config initConfig(void);
 
@@ -32,8 +30,8 @@ ERRORS_CODE configCommandSize(Config configApp);
 ERRORS_CODE createConfigFile(void);
 ERRORS_CODE reconfigureConfigFile(Config configApp);
 
-char* getColor(Config configApp);
-char* getColorSelection(Config configApp);
+char *getColor(Config configApp);
+char *getColorSelection(Config configApp);
 uint8_t getTypeMenu(Config configApp);
 
 ERRORS_CODE setColor(Config configApp);

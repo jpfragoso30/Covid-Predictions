@@ -1,13 +1,11 @@
 #include "../libs/FilesAndDirs.h"
 
-static ERRORS_CODE exisistDir(DIR* dir);
+static ERRORS_CODE exisistDir(DIR *dir);
 
+FILE *openFile(char *fileName, const char *format)
+{
 
-
-
-FILE* openFile(char* fileName, const char* format){
-
-    FILE* csvFile = NULL;
+    FILE *csvFile = NULL;
 
     csvFile = fopen(fileName, format);
 
@@ -16,9 +14,8 @@ FILE* openFile(char* fileName, const char* format){
     return csvFile;
 }
 
-
-
-FILE* closeFile(FILE* csvFile){
+FILE *closeFile(FILE *csvFile)
+{
 
     fclose(csvFile);
     csvFile = NULL;
@@ -26,11 +23,11 @@ FILE* closeFile(FILE* csvFile){
     return csvFile;
 }
 
+ERRORS_CODE fileExists(FILE *csvFile)
+{
 
-
-ERRORS_CODE fileExists(FILE* csvFile){
-
-    if(!csvFile){
+    if (!csvFile)
+    {
 
         csvFile = closeFile(csvFile);
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, INVALID_FILE);
@@ -40,13 +37,10 @@ ERRORS_CODE fileExists(FILE* csvFile){
     return ERROR_OK;
 }
 
+DIR *openNormalDir(const char *dirName)
+{
 
-
-
-
-DIR* openNormalDir(const char* dirName){
-
-    DIR* newDir = NULL;
+    DIR *newDir = NULL;
     newDir = opendir(dirName);
 
     exisistDir(newDir);
@@ -54,31 +48,29 @@ DIR* openNormalDir(const char* dirName){
     return newDir;
 }
 
+DIR *openConfigDir(const char *dirName)
+{
 
-
-DIR* openConfigDir(const char* dirName){
-
-    DIR* newDir = NULL;
+    DIR *newDir = NULL;
     newDir = opendir(dirName);
 
     return newDir;
 }
 
+ERRORS_CODE exisistConfigDir(DIR *dir)
+{
 
-
-ERRORS_CODE exisistConfigDir(DIR* dir){
-
-    if(!dir)
+    if (!dir)
         return INVALID_DIR;
-    
 
     return ERROR_OK;
 }
 
+ERRORS_CODE createDir(const char *dirName)
+{
 
-ERRORS_CODE createDir(const char* dirName){
-
-    if(mkdir(dirName, 0777) == -1){
+    if (mkdir(dirName, 0777) == -1)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, ERROR_CREATING_DIR);
         return ERROR_CREATING_DIR;
     }
@@ -86,14 +78,14 @@ ERRORS_CODE createDir(const char* dirName){
     return ERROR_OK;
 }
 
+FILE *openPloterFile(void)
+{
 
-
-FILE* openPloterFile(void){
-
-    FILE* plotFile = NULL;
+    FILE *plotFile = NULL;
     plotFile = popen("gnuplot -persistent", WRITE);
 
-    if(!plotFile){
+    if (!plotFile)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, ERROR_PLOTING);
         exit(ERROR_PLOTING);
     }
@@ -101,8 +93,8 @@ FILE* openPloterFile(void){
     return plotFile;
 }
 
-
-FILE* closePloterFile(FILE* plotFile){
+FILE *closePloterFile(FILE *plotFile)
+{
 
     pclose(plotFile);
     plotFile = NULL;
@@ -110,9 +102,11 @@ FILE* closePloterFile(FILE* plotFile){
     return plotFile;
 }
 
-static ERRORS_CODE exisistDir(DIR* dir){
-    
-    if(!dir){
+static ERRORS_CODE exisistDir(DIR *dir)
+{
+
+    if (!dir)
+    {
         closedir(dir);
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, INVALID_DIR);
         exit(INVALID_DIR);
@@ -120,8 +114,3 @@ static ERRORS_CODE exisistDir(DIR* dir){
 
     return ERROR_OK;
 }
-
-
-
-
-

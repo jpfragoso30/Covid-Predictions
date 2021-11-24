@@ -1,7 +1,8 @@
 #include "../libs/PF.h"
+#include "./Menu.c"
 
 //static void clearBuffer(void);
-static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char* newFileName);
+static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char *newFileName);
 static ERRORS_CODE ploterExistingFileState(PF pf);
 static ERRORS_CODE ploterState(PF pf);
 static ERRORS_CODE exitState(PF pf);
@@ -23,41 +24,39 @@ static void dinamicMenuControler(PF pf);
 static void dinamicMenuController(PF pf);
 static void clearBuffer(void);
 
+struct _PF
+{
 
-
-
-struct _PF{
-    
-    float* tiempo;
-    float* y; 
+    float *tiempo;
+    float *y;
     uint8_t endValue;
     float width;
-    char* fileNamePlot;
-    char* fileNameCsv;
+    char *fileNamePlot;
+    char *fileNameCsv;
 
     STATES nextState;
     int8_t seleccion;
 
-    ERRORS_CODE(*functionByProcess[5][5])(PF pf);
+    ERRORS_CODE(*functionByProcess[5][5])
+    (PF pf);
 
     CsvProcessing csv;
     Menu menu;
     Config configApp;
 };
 
-
-
-PF initPF(uint8_t endValue, float width){
+PF initPF(uint8_t endValue, float width)
+{
 
     PF newPF = NULL;
     newPF = malloc(sizeof(struct _PF));
 
-    if(!newPF){
+    if (!newPF)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
 
-    
     newPF->endValue = endValue;
     newPF->width = width;
 
@@ -72,7 +71,7 @@ PF initPF(uint8_t endValue, float width){
     newPF->csv = initCsvProccessing();
     newPF->menu = initMenu();
     newPF->configApp = initConfig();
-    
+
     newPF->seleccion = 0;
 
     newPF->functionByProcess[MENU_P][0] = &menuPrincipalState;
@@ -84,7 +83,6 @@ PF initPF(uint8_t endValue, float width){
     newPF->functionByProcess[PREDICCION][0] = &replotState;
     newPF->functionByProcess[PREDICCION][1] = &backToMainMenuState;
     newPF->functionByProcess[PREDICCION][2] = &exitState;
-
 
     newPF->functionByProcess[PLOTER][0] = &replotingExistingFileStateMenu;
     newPF->functionByProcess[PLOTER][1] = &backToMainMenuState;
@@ -105,11 +103,11 @@ PF initPF(uint8_t endValue, float width){
     return newPF;
 }
 
+PF freePF(PF PfToFree)
+{
 
-
-PF freePF(PF PfToFree){
-
-    if(!PfToFree){
+    if (!PfToFree)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -117,20 +115,22 @@ PF freePF(PF PfToFree){
     PfToFree->csv = freeCsvProcessing(PfToFree->csv);
     PfToFree->menu = freeMenu(PfToFree->menu);
     PfToFree->configApp = freeConfig(PfToFree->configApp);
-    
-    #if DEBUG_MODE
-        puts("free PF");
-    #endif
+
+#if DEBUG_MODE
+    puts("free PF");
+#endif
 
     PfToFree->tiempo = freeArray(PfToFree->tiempo);
     PfToFree->y = freeArray(PfToFree->y);
 
-    if(PfToFree->fileNameCsv[0] != '\0'){
+    if (PfToFree->fileNameCsv[0] != '\0')
+    {
         free(PfToFree->fileNameCsv);
         PfToFree->fileNameCsv = NULL;
     }
 
-    if(PfToFree->fileNamePlot[0] != '\0'){
+    if (PfToFree->fileNamePlot[0] != '\0')
+    {
         free(PfToFree->fileNamePlot);
         PfToFree->fileNamePlot = NULL;
     }
@@ -141,30 +141,31 @@ PF freePF(PF PfToFree){
     return PfToFree;
 }
 
-
-static ERRORS_CODE restartPF(PF pf){
+static ERRORS_CODE restartPF(PF pf)
+{
 
 #if DEBUG_MODE
-puts("restar PF STRCUT");    
+    puts("restar PF STRCUT");
 #endif
 
     pf->width = .100;
     pf->endValue = 10;
-    
-    if(pf->fileNameCsv[0] != '\0'){
+
+    if (pf->fileNameCsv[0] != '\0')
+    {
         free(pf->fileNameCsv);
         pf->fileNameCsv = "\0";
     }
-        
 
-    if(pf->fileNamePlot[0] != '\0'){
+    if (pf->fileNamePlot[0] != '\0')
+    {
         free(pf->fileNamePlot);
         pf->fileNamePlot = "\0";
     }
 
     pf->tiempo = freeArray(pf->tiempo);
     pf->tiempo = createArray(pf->tiempo, pf->endValue);
-    
+
     pf->y = freeArray(pf->y);
     pf->y = createArray(pf->y, pf->endValue);
 
@@ -174,25 +175,26 @@ puts("restar PF STRCUT");
     return ERROR_OK;
 }
 
-
 //SETTERS
-ERRORS_CODE setValueInTiempo(PF pf, float newValue, uint8_t index){
+ERRORS_CODE setValueInTiempo(PF pf, float newValue, uint8_t index)
+{
 
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
-
 
     pf->tiempo[index] = newValue;
 
     return ERROR_OK;
 }
 
+ERRORS_CODE setTiempoCero(PF pf, float xCero)
+{
 
-ERRORS_CODE setTiempoCero(PF pf, float xCero){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -202,10 +204,11 @@ ERRORS_CODE setTiempoCero(PF pf, float xCero){
     return ERROR_OK;
 }
 
+ERRORS_CODE setValueInY(PF pf, float newValue, uint8_t index)
+{
 
-ERRORS_CODE setValueInY(PF pf, float newValue, uint8_t index){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -215,10 +218,11 @@ ERRORS_CODE setValueInY(PF pf, float newValue, uint8_t index){
     return ERROR_OK;
 }
 
+ERRORS_CODE setYCero(PF pf, float yCero)
+{
 
-ERRORS_CODE setYCero(PF pf, float yCero){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -228,55 +232,59 @@ ERRORS_CODE setYCero(PF pf, float yCero){
     return ERROR_OK;
 }
 
-ERRORS_CODE setNextState(PF pf, STATES newProcess){
+ERRORS_CODE setNextState(PF pf, STATES newProcess)
+{
 
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
     pf->nextState = newProcess;
 
-    return ERROR_OK; 
+    return ERROR_OK;
 }
 
-
-
-ERRORS_CODE setOptionFromState(PF pf){
+ERRORS_CODE setOptionFromState(PF pf)
+{
 
     char line[256];
     uint8_t temp;
-    
-    if(!pf){
+
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
-    if(pf->seleccion == 10){
+    if (pf->seleccion == 10)
+    {
         pf->seleccion = 0;
         return ERROR_OK;
     }
-        
-    
-    if (fgets(line, sizeof(line), stdin)) {
-        if (1 == sscanf(line, "%" SCNu8, &(temp))) 
+
+    if (fgets(line, sizeof(line), stdin))
+    {
+        if (1 == sscanf(line, "%" SCNu8, &(temp)))
             pf->seleccion = temp;
         else
-            pf->seleccion = -1;    
+            pf->seleccion = -1;
     }
 
     //scanf("%" SCNu8, &(pf->seleccion));
     //clearBuffer();
-    return ERROR_OK; 
+    return ERROR_OK;
 }
 
-
-ERRORS_CODE setFileName(PF pf){
+ERRORS_CODE setFileName(PF pf)
+{
 
     char newFileNameCsv[BUFSIZ];
     char newFileName[BUFSIZ];
     char newFileNamePloter[BUFSIZ];
 
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -289,21 +297,21 @@ ERRORS_CODE setFileName(PF pf){
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
-   
     sprintf(newFileNamePloter, "PlotersResult/%s.pdf", newFileName);
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
-    return ERROR_OK; 
+    return ERROR_OK;
 }
 
-
-static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char* newFileName){
+static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char *newFileName)
+{
 
     char newFileNameCsv[BUFSIZ];
     char newFileNamePloter[BUFSIZ];
 
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -322,9 +330,11 @@ static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char* newFileName){
 }
 
 //GETTERS
-float* getTiempo(PF pf){
+float *getTiempo(PF pf)
+{
 
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -332,10 +342,11 @@ float* getTiempo(PF pf){
     return pf->tiempo;
 }
 
+float getTiempoValue(PF pf, uint8_t index)
+{
 
-float getTiempoValue(PF pf, uint8_t index){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -343,10 +354,11 @@ float getTiempoValue(PF pf, uint8_t index){
     return pf->tiempo[index];
 }
 
+float *getY(PF pf)
+{
 
-float* getY(PF pf){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -354,10 +366,11 @@ float* getY(PF pf){
     return pf->y;
 }
 
+float getYValue(PF pf, uint8_t index)
+{
 
-float getYValue(PF pf, uint8_t index){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -365,10 +378,11 @@ float getYValue(PF pf, uint8_t index){
     return pf->y[index];
 }
 
+float getEndValue(PF pf)
+{
 
-float getEndValue(PF pf){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -376,10 +390,11 @@ float getEndValue(PF pf){
     return pf->endValue;
 }
 
+float getWidth(PF pf)
+{
 
-float getWidth(PF pf){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -387,22 +402,23 @@ float getWidth(PF pf){
     return pf->width;
 }
 
+Menu getMenuStruct(PF pf)
+{
 
-
-Menu getMenuStruct(PF pf){
-
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
-    
+
     return pf->menu;
 }
 
+CsvProcessing getCsvProcessingStruct(PF pf)
+{
 
-CsvProcessing getCsvProcessingStruct(PF pf){
-    
-    if(!pf){
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -410,9 +426,11 @@ CsvProcessing getCsvProcessingStruct(PF pf){
     return pf->csv;
 }
 
-Config getConfigStruct(PF pf){
-    
-    if(!pf){
+Config getConfigStruct(PF pf)
+{
+
+    if (!pf)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -420,113 +438,103 @@ Config getConfigStruct(PF pf){
     return pf->configApp;
 }
 
-
-
-
-
 //CONTROLADOR
 
-ERRORS_CODE controlador(PF pf){
+ERRORS_CODE controlador(PF pf)
+{
 
-
-    switch (pf->nextState){
-        case MENU_P:
-            if(pf->seleccion >= 0 && pf->seleccion < 5)
-                pf->functionByProcess[MENU_P][pf->seleccion](pf);
-            else
-                pf->functionByProcess[MENU_P][0](pf);
-            break;
-        
-        case PREDICCION:
-            if(pf->seleccion > 0 && pf->seleccion < 4)
-                pf->functionByProcess[PREDICCION][pf->seleccion - 1](pf);
-            else 
-                reprintData(pf);
-            break;
-
-        case PLOTER:
-            if(pf->seleccion > 0 && pf->seleccion < 4)
-                pf->functionByProcess[PLOTER][pf->seleccion - 1](pf);
-            else
-                reprintData(pf);
-            break;    
-
-        case CONFIGURACIONES:
-            pf->functionByProcess[CONFIGURACIONES][pf->seleccion - 1](pf);
-            break;
-
-        case PLOTER_SELECT_FILE:
-            if(pf->seleccion > 0 && pf->seleccion <= getNumOptions(pf->menu))
-                pf->functionByProcess[SUBMENUS][0](pf);
-            else
-                pf->functionByProcess[MENU_P][2](pf);
-            break;
-
-        case CONFIG_MENU:
-            if(pf->seleccion >0 && pf->seleccion < 3)
-                pf->functionByProcess[SUBMENUS][1](pf);
-            else
-                pf->functionByProcess[MENU_P][3](pf);
-            break;
-
-        case COLORS_MENU:
-            if(pf->seleccion > 0 && pf->seleccion <= 4)
-                pf->functionByProcess[SUBMENUS][2](pf);
-            else if(pf->seleccion == 5)
-                pf->functionByProcess[SUBMENUS][3](pf);
-            else if(pf->seleccion == 6)
-                pf->functionByProcess[SUBMENUS][4](pf);
-            else
-                pf->functionByProcess[CONFIGURACIONES][0](pf);
-            break;
-        default:
+    switch (pf->nextState)
+    {
+    case MENU_P:
+        if (pf->seleccion >= 0 && pf->seleccion < 5)
+            pf->functionByProcess[MENU_P][pf->seleccion](pf);
+        else
             pf->functionByProcess[MENU_P][0](pf);
-            break;
+        break;
+
+    case PREDICCION:
+        if (pf->seleccion > 0 && pf->seleccion < 4)
+            pf->functionByProcess[PREDICCION][pf->seleccion - 1](pf);
+        else
+            reprintData(pf);
+        break;
+
+    case PLOTER:
+        if (pf->seleccion > 0 && pf->seleccion < 4)
+            pf->functionByProcess[PLOTER][pf->seleccion - 1](pf);
+        else
+            reprintData(pf);
+        break;
+
+    case CONFIGURACIONES:
+        pf->functionByProcess[CONFIGURACIONES][pf->seleccion - 1](pf);
+        break;
+
+    case PLOTER_SELECT_FILE:
+        if (pf->seleccion > 0 && pf->seleccion <= getNumOptions(pf->menu))
+            pf->functionByProcess[SUBMENUS][0](pf);
+        else
+            pf->functionByProcess[MENU_P][2](pf);
+        break;
+
+    case CONFIG_MENU:
+        if (pf->seleccion > 0 && pf->seleccion < 3)
+            pf->functionByProcess[SUBMENUS][1](pf);
+        else
+            pf->functionByProcess[MENU_P][3](pf);
+        break;
+
+    case COLORS_MENU:
+        if (pf->seleccion > 0 && pf->seleccion <= 4)
+            pf->functionByProcess[SUBMENUS][2](pf);
+        else if (pf->seleccion == 5)
+            pf->functionByProcess[SUBMENUS][3](pf);
+        else if (pf->seleccion == 6)
+            pf->functionByProcess[SUBMENUS][4](pf);
+        else
+            pf->functionByProcess[CONFIGURACIONES][0](pf);
+        break;
+    default:
+        pf->functionByProcess[MENU_P][0](pf);
+        break;
     }
 
     return ERROR_OK;
 }
 
-
-
-
 // REINICIA APP
-void restartApp(PF pf){
+void restartApp(PF pf)
+{
 
     createConfigFile();
     freePF(pf);
-    
+
     puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
     getchar();
 
-    system("./myapp.out");
+    system("./COVID_PREDICTIONS");
     exit(CONFIG_FILE_NOT_FOUND);
 }
 
-
 // STATICS
 
-static ERRORS_CODE menuPrincipalState(PF pf){
-    
+static ERRORS_CODE menuPrincipalState(PF pf)
+{
+
     //printMenu(pf->menu);
     dinamicMenuController(pf);
 
     return ERROR_OK;
 }
 
-
-static ERRORS_CODE ploterState(PF pf){
-
+static ERRORS_CODE ploterState(PF pf)
+{
 
     euler_method(getTiempo(pf), getY(pf), getWidth(pf), getEndValue(pf));
     setFileName(pf);
     writeCsv(pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
     plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
 
-    
-    
-    
-    
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER);
     //printMenu(pf->menu);
@@ -535,8 +543,8 @@ static ERRORS_CODE ploterState(PF pf){
     return ERROR_OK;
 }
 
-
-static ERRORS_CODE replotingExistingFileStateMenu(PF pf){
+static ERRORS_CODE replotingExistingFileStateMenu(PF pf)
+{
 
     restarCsvProcessing(pf->csv);
     ploterExistingFileStateMenu(pf);
@@ -544,7 +552,8 @@ static ERRORS_CODE replotingExistingFileStateMenu(PF pf){
     return ERROR_OK;
 }
 
-static ERRORS_CODE replotState(PF pf){
+static ERRORS_CODE replotState(PF pf)
+{
 
     restartPF(pf);
     restarCsvProcessing(pf->csv);
@@ -554,11 +563,8 @@ static ERRORS_CODE replotState(PF pf){
     writeCsv(pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
     plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
 
-   
-    
     //printResultData(pf->csv, pf->fileNameCsv);
-    
-    
+
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER);
     //printMenu(pf->menu);
@@ -567,47 +573,46 @@ static ERRORS_CODE replotState(PF pf){
     return ERROR_OK;
 }
 
+static ERRORS_CODE reprintData(PF pf)
+{
 
-static ERRORS_CODE reprintData(PF pf){
-
-    printResultData(pf->csv, pf->fileNameCsv);    
+    printResultData(pf->csv, pf->fileNameCsv);
     return ERROR_OK;
 }
 
+static ERRORS_CODE exitState(PF pf)
+{
 
-static ERRORS_CODE exitState(PF pf){
-    
     freePF(pf);
     exit(ERROR_OK);
 }
 
+static ERRORS_CODE ploterExistingFileState(PF pf)
+{
 
-
-static ERRORS_CODE ploterExistingFileState(PF pf){
-
-    if(pf->seleccion <= getNumOptions(pf->menu) && pf->seleccion > 0){
+    if (pf->seleccion <= getNumOptions(pf->menu) && pf->seleccion > 0)
+    {
         setFileNameFromMenuOptions(pf, getFileNameOfMenuOptions(pf->menu, pf->seleccion - 1));
-        plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);;
+        plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
+        ;
     }
 
-    
     puts(pf->fileNameCsv);
     //printResultData(pf->csv, pf->fileNameCsv);
 
     setMenuOptions(pf->menu, MENU_PLOTER);
     setNextState(pf, PLOTER);
     //printMenu(pf->menu);
-    dinamicMenuController(pf); 
-    
+    dinamicMenuController(pf);
 
     return ERROR_OK;
 }
 
+static ERRORS_CODE ploterExistingFileStateMenu(PF pf)
+{
 
-static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
-
-
-    if(setMenuOptions(pf->menu, MENU_REPLOT_FILE) == EMPTY_DIR){
+    if (setMenuOptions(pf->menu, MENU_REPLOT_FILE) == EMPTY_DIR)
+    {
         setNextState(pf, MENU_P);
         pf->seleccion = -1;
         setMenuOptions(pf->menu, MENU_PRINCIPAL);
@@ -621,8 +626,8 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
     return ERROR_OK;
 }
 
-
-static ERRORS_CODE configurationsMenuState(PF pf){
+static ERRORS_CODE configurationsMenuState(PF pf)
+{
 
     setMenuOptions(pf->menu, MENU_CONFS);
     //printMenu(pf->menu);
@@ -632,9 +637,9 @@ static ERRORS_CODE configurationsMenuState(PF pf){
     return ERROR_OK;
 }
 
+static ERRORS_CODE colorsMenuState(PF pf)
+{
 
-static ERRORS_CODE colorsMenuState(PF pf){
-    
     setMenuOptions(pf->menu, MENU_COLORS);
     //printMenu(pf->menu);
     dinamicMenuController(pf);
@@ -643,22 +648,22 @@ static ERRORS_CODE colorsMenuState(PF pf){
     return ERROR_OK;
 }
 
-
-
-static ERRORS_CODE backToMainMenuState(PF pf){
+static ERRORS_CODE backToMainMenuState(PF pf)
+{
 
     restartPF(pf);
     restarCsvProcessing(pf->csv);
 
     setNextState(pf, MENU_P);
     pf->seleccion = 10;
-    
+
     setMenuOptions(pf->menu, MENU_PRINCIPAL);
     return ERROR_OK;
 }
 
-static ERRORS_CODE chanegSizeWindow(PF pf){
-    
+static ERRORS_CODE chanegSizeWindow(PF pf)
+{
+
     puts("change size window");
     setWidht(pf->configApp);
     setHeight(pf->configApp);
@@ -671,7 +676,8 @@ static ERRORS_CODE chanegSizeWindow(PF pf){
     return ERROR_OK;
 }
 
-static ERRORS_CODE chanegColor(PF pf){
+static ERRORS_CODE chanegColor(PF pf)
+{
 
     puts("change color");
     setNumColor(pf->configApp, pf->seleccion - 1);
@@ -681,8 +687,8 @@ static ERRORS_CODE chanegColor(PF pf){
     return ERROR_OK;
 }
 
-
-static ERRORS_CODE changeTypeMenu(PF pf){
+static ERRORS_CODE changeTypeMenu(PF pf)
+{
 
     puts("change type Menu");
     setTypeMenu(pf->configApp);
@@ -692,70 +698,73 @@ static ERRORS_CODE changeTypeMenu(PF pf){
     return ERROR_OK;
 }
 
-
-static void dinamicMenuControler(PF pf){
+static void dinamicMenuControler(PF pf)
+{
 
     char input = '\0';
-	uint8_t firstInput = TRUE;
+    uint8_t firstInput = TRUE;
     pf->seleccion = 0;
-    do{
+    do
+    {
         printHeader();
         setDynamicOption(pf, input);
 
-        if(pf->nextState == PLOTER || pf->nextState == PREDICCION)
+        if (pf->nextState == PLOTER || pf->nextState == PREDICCION)
             reprintData(pf);
-        
+
         setMenuSelection(pf->menu, pf->seleccion);
         updateMenu(pf->menu, getColor(pf->configApp), getColorSelection(pf->configApp));
 
-		if(firstInput)
-			firstInput = FALSE;
-		else
-			clearBuffer();
+        if (firstInput)
+            firstInput = FALSE;
+        else
+            clearBuffer();
 
-    }while((input = getchar()) != 'x' && input != 'X' && input != EOF);
+    } while ((input = getchar()) != 'x' && input != 'X' && input != EOF);
     clearBuffer();
-    pf->seleccion ++;
+    pf->seleccion++;
 }
 
-
-static ERRORS_CODE setDynamicOption(PF pf, char newOption){
+static ERRORS_CODE setDynamicOption(PF pf, char newOption)
+{
 
     newOption = tolower(newOption);
-    
-    if(newOption == 'w')
-        pf->seleccion --;
-    else if(newOption == 's')
-        pf->seleccion ++;
 
+    if (newOption == 'w')
+        pf->seleccion--;
+    else if (newOption == 's')
+        pf->seleccion++;
 
-    if(pf->seleccion >= getNumOptions(pf->menu))
+    if (pf->seleccion >= getNumOptions(pf->menu))
         pf->seleccion = 0;
-    else if(pf->seleccion < 0)
+    else if (pf->seleccion < 0)
         pf->seleccion = getNumOptions(pf->menu) - 1;
 
     return ERROR_OK;
 }
 
-
-static void dinamicMenuController(PF pf){
+static void dinamicMenuController(PF pf)
+{
 
     printHeader();
-    if(getTypeMenu(pf->configApp)){
+    if (getTypeMenu(pf->configApp))
+    {
 
-        if(pf->nextState == PREDICCION || pf->nextState == PLOTER)
+        if (pf->nextState == PREDICCION || pf->nextState == PLOTER)
             printResultData(pf->csv, pf->fileNameCsv);
 
         printMenu(pf->menu);
     }
-    else{
+    else
+    {
         dinamicMenuControler(pf);
     }
-       
 }
 
-static void clearBuffer(void){
+static void clearBuffer(void)
+{
 
-	char input;
-	while((input = getchar()) != '\n');
+    char input;
+    while ((input = getchar()) != '\n')
+        ;
 }

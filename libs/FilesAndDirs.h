@@ -10,23 +10,20 @@
 #include <string.h>
 #include "Errors.h"
 
-
-
 #define READ "r"
 #define WRITE "w"
 #define APPEND "a"
 
+FILE *openFile(char *fileName, const char *format);
+FILE *closeFile(FILE *csvFile);
+ERRORS_CODE fileExists(FILE *csvFile);
 
-FILE* openFile(char* fileName, const char* format);
-FILE* closeFile(FILE* csvFile);
-ERRORS_CODE fileExists(FILE* csvFile);
+FILE *openPloterFile();
+FILE *closePloterFile(FILE *plotFile);
 
-FILE* openPloterFile();
-FILE* closePloterFile(FILE* plotFile);
-
-DIR* openConfigDir(const char* dirName);
-ERRORS_CODE exisistConfigDir(DIR* dir);
-ERRORS_CODE createDir(const char* dirName);
-DIR* openNormalDir(const char* dirName);
+DIR *openConfigDir(const char *dirName);
+ERRORS_CODE exisistConfigDir(DIR *dir);
+ERRORS_CODE createDir(const char *dirName);
+DIR *openNormalDir(const char *dirName);
 
 #endif

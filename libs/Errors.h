@@ -11,7 +11,8 @@
 // para debugear las liberaciones de memoria
 #define DEBUG_MODE 1
 
-typedef enum errors{
+typedef enum errors
+{
     MEM_ERROR,
     ERROR_OK,
     EMPTY_STRUCT,
@@ -22,8 +23,7 @@ typedef enum errors{
     ERROR_CREATING_DIR,
     ERROR_PLOTING,
     EMPTY_DIR,
-    
-}ERRORS_CODE;
 
+} ERRORS_CODE;
 
 #endif
