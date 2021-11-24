@@ -195,7 +195,7 @@ static ERRORS_CODE createMenuFiles(Menu menu)
         exit(EMPTY_STRUCT);
     }
 
-    dr = opendir("CsvResults");
+    dr = opendir("./Covid-Predictions/CsvResults/");
 
     if (dr == NULL)
     {

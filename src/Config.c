@@ -31,9 +31,9 @@ Config initConfig(void)
     newConfig->width = -1;
     newConfig->height = -1;
     newConfig->typeMenu = 0;
-    newConfig->dirPloters = "PlotersResult";
-    newConfig->dirCsvsResults = "CsvResults";
-    newConfig->dirsCsvEntrenamiento = "CsvEntr";
+    newConfig->dirPloters = "./Covid-Predictions/PlotersResult";
+    newConfig->dirCsvsResults = "./Covid-Predictions/CsvResults";
+    newConfig->dirsCsvEntrenamiento = "./Covid-Predictions/CsvEntr";
 
     return newConfig;
 }
@@ -81,7 +81,7 @@ ERRORS_CODE static setConfigurations(Config configApp)
         exit(EMPTY_STRUCT);
     }
 
-    configIni = ini_load("config.ini");
+    configIni = ini_load("./Covid-Predictions/config.ini");
     if (configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
@@ -107,11 +107,11 @@ ERRORS_CODE static setConfigurations(Config configApp)
 ERRORS_CODE createConfigFile(void)
 {
 
-    FILE *configFile = openFile("config.ini", WRITE);
+    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
     struct stat attrib;
     char date[20];
 
-    stat("config.ini", &attrib);
+    stat("../config.ini", &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CREATED AT: %s\n\n", date);
@@ -129,11 +129,11 @@ ERRORS_CODE createConfigFile(void)
 ERRORS_CODE reconfigureConfigFile(Config configApp)
 {
 
-    FILE *configFile = openFile("config.ini", WRITE);
+    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
     struct stat attrib;
     char date[20];
 
-    stat("config.ini", &attrib);
+    stat("../config.ini", &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CHANGE AT: %s\n\n", date);

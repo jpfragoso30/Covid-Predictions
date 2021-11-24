@@ -293,11 +293,11 @@ ERRORS_CODE setFileName(PF pf)
     fgets(newFileName, BUFSIZ, stdin);
 
     formatString(newFileName, '\n');
-    sprintf(newFileNameCsv, "CsvResults/%s.csv", newFileName);
+    sprintf(newFileNameCsv, "./Covid-Predictions/CsvResults/%s.csv", newFileName);
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
-    sprintf(newFileNamePloter, "PlotersResult/%s.pdf", newFileName);
+    sprintf(newFileNamePloter, "./Covid-Predictions/PlotersResult/%s.pdf", newFileName);
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -316,13 +316,13 @@ static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char *newFileName)
         exit(EMPTY_STRUCT);
     }
 
-    sprintf(newFileNameCsv, "CsvResults/%s", newFileName);
+    sprintf(newFileNameCsv, "./Covid-Predictions/CsvResults/%s", newFileName);
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
     formatString(newFileName, '.');
 
-    sprintf(newFileNamePloter, "PlotersResult/%s.pdf", newFileName);
+    sprintf(newFileNamePloter, "./Covid-Predictions/PlotersResult/%s.pdf", newFileName);
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -502,8 +502,9 @@ ERRORS_CODE controlador(PF pf)
     return ERROR_OK;
 }
 
+
 // REINICIA APP
-void restartApp(PF pf)
+void restartApp(PF pf, char* nameExecutable)
 {
 
     createConfigFile();
@@ -512,7 +513,7 @@ void restartApp(PF pf)
     puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
     getchar();
 
-    system("./COVID_PREDICTIONS");
+    system(nameExecutable);
     exit(CONFIG_FILE_NOT_FOUND);
 }
 
@@ -594,7 +595,6 @@ static ERRORS_CODE ploterExistingFileState(PF pf)
     {
         setFileNameFromMenuOptions(pf, getFileNameOfMenuOptions(pf->menu, pf->seleccion - 1));
         plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
-        ;
     }
 
     puts(pf->fileNameCsv);
