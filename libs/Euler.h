@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include "Errors.h"
 
-void euler_method(float* x, float* y, float width, uint8_t n);
-
+void euler_method(float *x, float *y, float width, uint8_t n);
 
 #endif

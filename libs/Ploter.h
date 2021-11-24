@@ -8,9 +8,6 @@
 #include "Errors.h"
 #include "FilesAndDirs.h"
 
-
-
-ERRORS_CODE plotResults(char* plotFileName, char* csvFileName,float* x, float* y, uint8_t rows);
-
+ERRORS_CODE plotResults(char *plotFileName, char *csvFileName, float *x, float *y, uint8_t rows);
 
 #endif

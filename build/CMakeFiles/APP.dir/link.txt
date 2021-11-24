@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/cc  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/APP.dir/main.c.o -o APP   -L/Users/frags/Desktop/5tosemestre/TDA/Covid_Predictions/src/build  -Wl,-rpath,/Users/frags/Desktop/5tosemestre/TDA/Covid_Predictions/src/build -lpredictors 

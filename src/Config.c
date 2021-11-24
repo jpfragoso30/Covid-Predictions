@@ -4,26 +4,26 @@ ERRORS_CODE static setConfigurations(Config configApp);
 static ERRORS_CODE checkConfig(Config configApp);
 static ERRORS_CODE checkDirs(Config configApp);
 
+struct _Config
+{
 
-struct _Config{
-    
-    uint8_t width; 
+    uint8_t width;
     uint8_t height;
     uint8_t numColor;
     uint8_t typeMenu;
-    const char* dirPloters;
-    const char* dirCsvsResults;
-    const char* dirsCsvEntrenamiento;
-
+    const char *dirPloters;
+    const char *dirCsvsResults;
+    const char *dirsCsvEntrenamiento;
 };
 
-
-Config initConfig(void){
+Config initConfig(void)
+{
 
     Config newConfig = NULL;
     newConfig = malloc(sizeof(struct _Config));
 
-    if(!newConfig){
+    if (!newConfig)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -38,12 +38,12 @@ Config initConfig(void){
     return newConfig;
 }
 
+Config freeConfig(Config configToFree)
+{
 
-Config freeConfig(Config configToFree){
-
-    #if DEBUG_MODE
+#if DEBUG_MODE
     puts("free Config Struct");
-    #endif
+#endif
 
     free(configToFree);
     configToFree = NULL;
@@ -51,49 +51,47 @@ Config freeConfig(Config configToFree){
     return configToFree;
 }
 
+ERRORS_CODE configureApp(Config configApp)
+{
 
-ERRORS_CODE configureApp(Config configApp){
-    
-    #if DEBUG_MODE
+#if DEBUG_MODE
     puts("Config APP!");
-    #endif
+#endif
 
-
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    if(setConfigurations(configApp) != ERROR_OK)
+    if (setConfigurations(configApp) != ERROR_OK)
         return CONFIG_ERROR;
 
-    
     return ERROR_OK;
 }
 
+ERRORS_CODE static setConfigurations(Config configApp)
+{
 
-ERRORS_CODE static setConfigurations(Config configApp){
+    ini_t *configIni = NULL;
 
-    ini_t* configIni = NULL;
-    
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    
     configIni = ini_load("config.ini");
-    if(configIni == NULL)
+    if (configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
-    
-	ini_sget(configIni, "app", "menu", "%hhu", &configApp->typeMenu);
+    ini_sget(configIni, "app", "menu", "%hhu", &configApp->typeMenu);
     ini_sget(configIni, "app", "width", "%hhu", &configApp->width);
     ini_sget(configIni, "app", "height", "%hhu", &configApp->height);
     ini_sget(configIni, "app", "color", "%hhu", &configApp->numColor);
 
-
-    if(checkConfig(configApp) == CONFIG_ERROR){       
+    if (checkConfig(configApp) == CONFIG_ERROR)
+    {
         ini_free(configIni);
         return CONFIG_ERROR;
     }
@@ -106,19 +104,19 @@ ERRORS_CODE static setConfigurations(Config configApp){
     return ERROR_OK;
 }
 
+ERRORS_CODE createConfigFile(void)
+{
 
-ERRORS_CODE createConfigFile(void){
-    
-    FILE* configFile = openFile("config.ini", WRITE);
+    FILE *configFile = openFile("config.ini", WRITE);
     struct stat attrib;
-    char date[20];   
-    
+    char date[20];
+
     stat("config.ini", &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CREATED AT: %s\n\n", date);
-	fprintf(configFile, "[app]\n");
-	fprintf(configFile, "menu=1\n");
+    fprintf(configFile, "[app]\n");
+    fprintf(configFile, "menu=1\n");
     fprintf(configFile, "%s\n", "width=42");
     fprintf(configFile, "%s\n", "height=100");
     fprintf(configFile, "%s\n", "color=1");
@@ -128,18 +126,19 @@ ERRORS_CODE createConfigFile(void){
     return ERROR_OK;
 }
 
-ERRORS_CODE reconfigureConfigFile(Config configApp){
+ERRORS_CODE reconfigureConfigFile(Config configApp)
+{
 
-    FILE* configFile = openFile("config.ini", WRITE);
+    FILE *configFile = openFile("config.ini", WRITE);
     struct stat attrib;
-    char date[20];   
-    
+    char date[20];
+
     stat("config.ini", &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CHANGE AT: %s\n\n", date);
-	fprintf(configFile, "[app]\n");
-	fprintf(configFile, "menu=%d\n", configApp->typeMenu);
+    fprintf(configFile, "[app]\n");
+    fprintf(configFile, "menu=%d\n", configApp->typeMenu);
     fprintf(configFile, "width=%d\n", configApp->width);
     fprintf(configFile, "height=%d\n", configApp->height);
     fprintf(configFile, "color=%hhu\n", configApp->numColor);
@@ -147,73 +146,72 @@ ERRORS_CODE reconfigureConfigFile(Config configApp){
     closeFile(configFile);
 
     return ERROR_OK;
-
 }
 
-ERRORS_CODE configCommandSize(Config configApp){
-    
+ERRORS_CODE configCommandSize(Config configApp)
+{
+
     char command[BUFSIZ];
-    
+
     sprintf(command, "resize -s %d %d", configApp->height, configApp->width);
     system(command);
 
     return ERROR_OK;
 }
 
+char *getColor(Config configApp)
+{
 
+    const char *configListColors[] = {WHITE, RED, GREEN, CYAN};
 
-
-char* getColor(Config configApp){
-    
-    const char* configListColors[] = {WHITE,  RED, GREEN, CYAN};
-    
-    if(!configApp){
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-        
-        
-    return strdup(configListColors[configApp->numColor]);   
-}
-
-
-
-char* getColorSelection(Config configApp){
-
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    switch (configApp->numColor){
-        
-        case 0:
-            return RED;
-            break;
-            
-        case 1:
-            return WHITE;
-            break;
+    return strdup(configListColors[configApp->numColor]);
+}
 
-        case 2:
-            return CYAN;
-            break;
+char *getColorSelection(Config configApp)
+{
 
-        case 3:
-            return GREEN;
-            break;
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
 
-        default:
-            return CYAN;
-            break;
+    switch (configApp->numColor)
+    {
+
+    case 0:
+        return RED;
+        break;
+
+    case 1:
+        return WHITE;
+        break;
+
+    case 2:
+        return CYAN;
+        break;
+
+    case 3:
+        return GREEN;
+        break;
+
+    default:
+        return CYAN;
+        break;
     }
 }
 
+uint8_t getTypeMenu(Config configApp)
+{
 
-
-uint8_t getTypeMenu(Config configApp){
-
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -223,33 +221,39 @@ uint8_t getTypeMenu(Config configApp){
 
 // SETTERS
 
-ERRORS_CODE setColor(Config configApp){
-    
-    if(!configApp){
+ERRORS_CODE setColor(Config configApp)
+{
+
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    
     puts(getColor(configApp));
 
     return ERROR_OK;
 }
 
-ERRORS_CODE setWidht(Config configApp){
+ERRORS_CODE setWidht(Config configApp)
+{
 
     char line[256];
     uint8_t temp;
 
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
     puts("Enter a new Width for the window");
-    while(TRUE){
-        if (fgets(line, sizeof(line), stdin)) {
-            if (1 == sscanf(line, "%" SCNu8, &(temp))){
+    while (TRUE)
+    {
+        if (fgets(line, sizeof(line), stdin))
+        {
+            if (1 == sscanf(line, "%" SCNu8, &(temp)))
+            {
                 configApp->width = temp;
                 return ERROR_OK;
             }
@@ -257,22 +261,25 @@ ERRORS_CODE setWidht(Config configApp){
     }
 }
 
-
-
-ERRORS_CODE setHeight(Config configApp){
+ERRORS_CODE setHeight(Config configApp)
+{
 
     char line[256];
     uint8_t temp;
 
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
     puts("Enter a new Height for the window");
-    while(TRUE){
-        if (fgets(line, sizeof(line), stdin)) {
-            if (1 == sscanf(line, "%" SCNu8, &(temp))){
+    while (TRUE)
+    {
+        if (fgets(line, sizeof(line), stdin))
+        {
+            if (1 == sscanf(line, "%" SCNu8, &(temp)))
+            {
                 configApp->height = temp;
                 return ERROR_OK;
             }
@@ -280,15 +287,16 @@ ERRORS_CODE setHeight(Config configApp){
     }
 }
 
+ERRORS_CODE setTypeMenu(Config configApp)
+{
 
-ERRORS_CODE setTypeMenu(Config configApp){
-
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    if(configApp->typeMenu)
+    if (configApp->typeMenu)
         configApp->typeMenu = 0;
     else
         configApp->typeMenu = 1;
@@ -296,37 +304,43 @@ ERRORS_CODE setTypeMenu(Config configApp){
     return ERROR_OK;
 }
 
-static ERRORS_CODE checkDirs(Config configApp){
+static ERRORS_CODE checkDirs(Config configApp)
+{
 
-    DIR* dirs = NULL;
+    DIR *dirs = NULL;
 
     dirs = openConfigDir(configApp->dirCsvsResults);
-    if(exisistConfigDir(dirs) != ERROR_OK){
+    if (exisistConfigDir(dirs) != ERROR_OK)
+    {
         createDir(configApp->dirCsvsResults);
-    }else
+    }
+    else
         closedir(dirs);
-
 
     dirs = openConfigDir(configApp->dirPloters);
-    if(exisistConfigDir(dirs) != ERROR_OK){
+    if (exisistConfigDir(dirs) != ERROR_OK)
+    {
         createDir(configApp->dirPloters);
-    }else
+    }
+    else
         closedir(dirs);
-    
 
     dirs = openConfigDir(configApp->dirsCsvEntrenamiento);
-    if(exisistConfigDir(dirs) != ERROR_OK){
+    if (exisistConfigDir(dirs) != ERROR_OK)
+    {
         createDir(configApp->dirsCsvEntrenamiento);
-    }else
+    }
+    else
         closedir(dirs);
 
     return ERROR_OK;
 }
 
+ERRORS_CODE setNumColor(Config configApp, uint8_t newColor)
+{
 
-ERRORS_CODE setNumColor(Config configApp, uint8_t newColor){
-
-    if(!configApp){
+    if (!configApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -336,21 +350,19 @@ ERRORS_CODE setNumColor(Config configApp, uint8_t newColor){
     return ERROR_OK;
 }
 
-
 //STATICS
 
-static ERRORS_CODE checkConfig(Config configApp){
+static ERRORS_CODE checkConfig(Config configApp)
+{
 
-    if(configApp->numColor < 0 || configApp->height < 0 || configApp->width < 0 || configApp->typeMenu < 0)
+    if (configApp->numColor < 0 || configApp->height < 0 || configApp->width < 0 || configApp->typeMenu < 0)
         return CONFIG_ERROR;
 
-	if(configApp->typeMenu > 1)
-		configApp->typeMenu = 1;
+    if (configApp->typeMenu > 1)
+        configApp->typeMenu = 1;
 
-    if(configApp->numColor > 3)
+    if (configApp->numColor > 3)
         configApp->numColor = 3;
 
     return ERROR_OK;
 }
-
-

@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libpf.a CMakeFiles/pf.dir/PF.c.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libpf.a

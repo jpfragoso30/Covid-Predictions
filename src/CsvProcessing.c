@@ -1,29 +1,26 @@
 #include "../libs/CsvProcessing.h"
 
-
-
-
-struct _CsvProcessing{
+struct _CsvProcessing
+{
 
     //!float** data; --> EN caso de usarse floats solos
 
-    char*** data;
+    char ***data;
     uint8_t rows;
     uint8_t columns;
     uint8_t columnsWithData;
     uint8_t rowsWithData;
-    char* fileName;
-
+    char *fileName;
 };
 
-
-
-CsvProcessing initCsvProccessing(void){
+CsvProcessing initCsvProccessing(void)
+{
 
     CsvProcessing newCsv = NULL;
     newCsv = malloc(sizeof(struct _CsvProcessing));
 
-    if(!newCsv){
+    if (!newCsv)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -37,19 +34,18 @@ CsvProcessing initCsvProccessing(void){
     return newCsv;
 }
 
+CsvProcessing freeCsvProcessing(CsvProcessing csvProcessingToFree)
+{
 
-
-CsvProcessing freeCsvProcessing(CsvProcessing csvProcessingToFree){
-
-    #if DEBUG_MODE
+#if DEBUG_MODE
     puts("free CsvProcessing");
-    #endif
-    if(!csvProcessingToFree){
+#endif
+    if (!csvProcessingToFree)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
-    
     //!csvProcessingToFree->data = freeMatrix(csvProcessingToFree->data, csvProcessingToFree->rows);
     csvProcessingToFree->data = freeMatrixString(csvProcessingToFree->data, csvProcessingToFree->rows);
 
@@ -59,22 +55,21 @@ CsvProcessing freeCsvProcessing(CsvProcessing csvProcessingToFree){
     return csvProcessingToFree;
 }
 
+ERRORS_CODE restarCsvProcessing(CsvProcessing csvToRestart)
+{
 
-
-ERRORS_CODE restarCsvProcessing(CsvProcessing csvToRestart){
-
-    #if DEBUG_MODE
+#if DEBUG_MODE
     puts("free restarting csv struct");
-    #endif
+#endif
 
-    if(!csvToRestart){
+    if (!csvToRestart)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
     csvToRestart->data = freeMatrixString(csvToRestart->data, csvToRestart->rows);
-    
-    
+
     csvToRestart->columns = 10;
     csvToRestart->rows = 10;
     csvToRestart->rowsWithData = 0;
@@ -83,7 +78,6 @@ ERRORS_CODE restarCsvProcessing(CsvProcessing csvToRestart){
     csvToRestart->data = createStringMatrix(csvToRestart->data, csvToRestart->rows, csvToRestart->columns);
     return ERROR_OK;
 }
-
 
 /*
 ERRORS_CODE readCsvForPrint(CsvProcessing csvData, char* fileName){
@@ -129,24 +123,25 @@ ERRORS_CODE readCsvForPrint(CsvProcessing csvData, char* fileName){
 }
 */
 
-ERRORS_CODE readCsv(CsvProcessing csvData, char* fileName){
-
+ERRORS_CODE readCsv(CsvProcessing csvData, char *fileName)
+{
 
     FILE *csvFile = openFile(fileName, READ);
 
     char buffer[BUFSIZ];
-    char* value;
+    char *value;
     uint8_t fileRows = 0, fileColumns = 0;
-    
 
-    while (fgets(buffer, BUFSIZ, csvFile) != NULL){
-        
+    while (fgets(buffer, BUFSIZ, csvFile) != NULL)
+    {
+
         value = strtok(buffer, ",\t");
         fileColumns = 0;
-        while (value != NULL){
-            
-            
-            if(fileColumns >= csvData->columns){
+        while (value != NULL)
+        {
+
+            if (fileColumns >= csvData->columns)
+            {
                 csvData->data[fileRows] = setMoreColumnsString(csvData->data[fileRows], csvData->columns);
                 csvData->columns *= 2;
             }
@@ -155,63 +150,53 @@ ERRORS_CODE readCsv(CsvProcessing csvData, char* fileName){
             csvData->data[fileRows][fileColumns] = createStrignSpace(csvData->data[fileRows][fileColumns], value);
             csvData->data[fileRows][fileColumns] = strdup(value);
 
-           value = strtok(NULL, ",\t");
-           fileColumns++;   
+            value = strtok(NULL, ",\t");
+            fileColumns++;
         }
 
-        
         fileRows++;
-        if(fileRows >= csvData->rows){
+        if (fileRows >= csvData->rows)
+        {
             csvData->data = setMoreRowsString(csvData->data, csvData->rows, csvData->columns);
             csvData->rows *= 2;
         }
-
     }
 
-    
     csvData->columnsWithData = fileColumns;
     csvData->rowsWithData = fileRows;
-
-    csvFile = closeFile(csvFile);
-    return ERROR_OK;    
-}
-
-
-
-ERRORS_CODE writeCsv(char* fileName, float* x, float* y, uint8_t rows){
-
-    FILE* csvFile = openFile(fileName, WRITE);
-
-    fputs("#X,\tY\n", csvFile);
-    for(uint8_t i = 0; i < rows; i++)
-        fprintf(csvFile, "%f,\t%f\n", x[i], y[i]);
-    
 
     csvFile = closeFile(csvFile);
     return ERROR_OK;
 }
 
+ERRORS_CODE writeCsv(char *fileName, float *x, float *y, uint8_t rows)
+{
 
+    FILE *csvFile = openFile(fileName, WRITE);
 
+    fputs("#X,\tY\n", csvFile);
+    for (uint8_t i = 0; i < rows; i++)
+        fprintf(csvFile, "%f,\t%f\n", x[i], y[i]);
 
-
-
-
-
-void formatString(char* string, char charToClean){
-
-	char *ptr = strchr(string, charToClean);
-	if (ptr)
-		*ptr  = '\0';
-
+    csvFile = closeFile(csvFile);
+    return ERROR_OK;
 }
 
+void formatString(char *string, char charToClean)
+{
+
+    char *ptr = strchr(string, charToClean);
+    if (ptr)
+        *ptr = '\0';
+}
 
 // GETTERS
 
-uint8_t getRowsWithData(CsvProcessing csv){
+uint8_t getRowsWithData(CsvProcessing csv)
+{
 
-    if(!csv){
+    if (!csv)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -219,9 +204,11 @@ uint8_t getRowsWithData(CsvProcessing csv){
     return csv->rowsWithData;
 }
 
-char** getRowDataForPrinting(CsvProcessing csv, uint8_t index){
+char **getRowDataForPrinting(CsvProcessing csv, uint8_t index)
+{
 
-    if(!csv){
+    if (!csv)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -229,10 +216,11 @@ char** getRowDataForPrinting(CsvProcessing csv, uint8_t index){
     return csv->data[index];
 }
 
+uint8_t getColumnsWithData(CsvProcessing csv)
+{
 
-uint8_t getColumnsWithData(CsvProcessing csv){
-
-    if(!csv){
+    if (!csv)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -240,23 +228,20 @@ uint8_t getColumnsWithData(CsvProcessing csv){
     return csv->columnsWithData;
 }
 
-
-
-void printResultData(CsvProcessing csv, char* fileName){
-
+void printResultData(CsvProcessing csv, char *fileName)
+{
 
     ft_table_t *table = ft_create_table();
-	ft_set_border_style(table, FT_DOUBLE2_STYLE);
+    ft_set_border_style(table, FT_DOUBLE2_STYLE);
     ft_set_cell_prop(table, 0, FT_ANY_COLUMN, FT_CPROP_ROW_TYPE, FT_ROW_HEADER);
 
     readCsv(csv, fileName);
-    
 
-    
     puts("\n\n");
-    for(uint8_t row = 0; row < csv->rowsWithData; row++){
-    
-        ft_row_write_ln(table, csv->columnsWithData, (const char**)csv->data[row]);
+    for (uint8_t row = 0; row < csv->rowsWithData; row++)
+    {
+
+        ft_row_write_ln(table, csv->columnsWithData, (const char **)csv->data[row]);
         ft_set_cell_prop(table, FT_ANY_ROW, row, FT_CPROP_TEXT_ALIGN, FT_ALIGNED_CENTER);
     }
 
