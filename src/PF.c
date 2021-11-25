@@ -509,7 +509,7 @@ void restartApp(PF pf, char* nameExcutable, char* configFilePath){
 
 static ERRORS_CODE menuPrincipalState(PF pf){
     
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -530,7 +530,7 @@ static ERRORS_CODE ploterState(PF pf){
     
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -562,7 +562,7 @@ static ERRORS_CODE replotState(PF pf){
     
     setNextState(pf, PREDICCION);
     setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -579,7 +579,7 @@ static ERRORS_CODE reprintData(PF pf){
 static ERRORS_CODE exitState(PF pf){
     
     freePF(pf);
-    exit(ERROR_OK);
+    exit(0);
 }
 
 
@@ -597,7 +597,7 @@ static ERRORS_CODE ploterExistingFileState(PF pf){
 
     setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
     setNextState(pf, PLOTER);
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf); 
     
 
@@ -615,7 +615,7 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
         return EMPTY_DIR;
     }
 
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     setNextState(pf, PLOTER_SELECT_FILE);
@@ -626,7 +626,7 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
 static ERRORS_CODE configurationsMenuState(PF pf){
 
     setMenuOptions(pf->menu, MENU_CONFS, getCsvResutlsDir(pf->configApp));
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
     setNextState(pf, CONFIGURACIONES);
 
@@ -637,7 +637,7 @@ static ERRORS_CODE configurationsMenuState(PF pf){
 static ERRORS_CODE colorsMenuState(PF pf){
     
     setMenuOptions(pf->menu, MENU_COLORS, getCsvResutlsDir(pf->configApp));
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     setNextState(pf, COLORS_MENU);

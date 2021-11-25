@@ -9,7 +9,8 @@
 #define FALSE 0
 
 // para debugear las liberaciones de memoria
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
+
 
 typedef enum errors{
     MEM_ERROR,
