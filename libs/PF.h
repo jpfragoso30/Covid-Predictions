@@ -33,7 +33,7 @@ typedef enum states{
 }STATES;
 
 // Constructor
-PF initPF(uint8_t endValue, float width);
+PF initPF(uint8_t endValue, float width, char* userPath);
 
 // Destructor
 PF freePF(PF PfToFree);
@@ -64,5 +64,6 @@ ERRORS_CODE controlador(PF pf);
 
 
 //REINICIA LA APP
-void restartApp(PF pf, char* nameExcutable);
+void restartApp(PF pf, char* nameExcutable, char* configFilePath);
+
 #endif

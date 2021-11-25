@@ -34,7 +34,7 @@ void printMenu(Menu menuApp);
 void updateMenu(Menu menuApp, char* color, char* colorSelection);
 
 // SETTERS
-ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu);
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath);
 ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection);
 
 // GETTERS

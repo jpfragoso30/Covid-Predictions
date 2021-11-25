@@ -2,7 +2,7 @@
 
 
 static ERRORS_CODE validateFile(const char* fileName);
-static ERRORS_CODE createMenuFiles(Menu menu);
+static ERRORS_CODE createMenuFiles(Menu menu, char* path);
 
 
 
@@ -64,7 +64,7 @@ Menu freeMenu(Menu menuToFree){
 
 // SETTERS
 
-ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu){
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath){
 
     const char* list[4][7] = { 
                             {"MAKE PREDICTION", "PLOTER", "CHANGE CONFIGURATIONS", "EXIT", NULL},
@@ -81,7 +81,7 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu){
     menu->numOptions = 0;
 
     if(typemenu == MENU_REPLOT_FILE)
-        createMenuFiles(menu);
+        createMenuFiles(menu, userPath);
     else{
 
         for(uint8_t i = 0; list[typemenu][i] != (void*)0; i++, menu->numOptions++){
@@ -188,7 +188,7 @@ void printHeader(void){
 
 // STATICS
 
-static ERRORS_CODE createMenuFiles(Menu menu){
+static ERRORS_CODE createMenuFiles(Menu menu, char* path){
 
     
     DIR *dr = NULL;
@@ -200,7 +200,7 @@ static ERRORS_CODE createMenuFiles(Menu menu){
     }
     
 
-    dr = opendir("CsvResults");
+    dr = opendir(path);
 
     if(dr == NULL){
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, INVALID_DIR);

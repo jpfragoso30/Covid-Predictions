@@ -6,10 +6,10 @@
 
 int main(int argc, char* argv[]){
 
-    PF pf = initPF(10, .100);
+    PF pf = initPF(10, .100, argv[0]);
 
 
-    setMenuOptions(getMenuStruct(pf), MENU_PRINCIPAL);
+    setMenuOptions(getMenuStruct(pf), MENU_PRINCIPAL, getCsvResutlsDir(getConfigStruct(pf)));
 
     
 
@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
     
 
     if(configureApp(getConfigStruct(pf)) != ERROR_OK)
-        restartApp(pf, argv[0]);
+        restartApp(pf, argv[0], getConfigFilePath(getConfigStruct(pf)));
     
     
     while (TRUE){

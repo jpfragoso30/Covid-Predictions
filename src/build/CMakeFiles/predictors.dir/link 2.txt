@@ -1,0 +1,2 @@
+/Library/Developer/CommandLineTools/usr/bin/ar qc libpredictors.a CMakeFiles/predictors.dir/PF.c.o CMakeFiles/predictors.dir/Config.c.o CMakeFiles/predictors.dir/CsvProcessing.c.o CMakeFiles/predictors.dir/Euler.c.o CMakeFiles/predictors.dir/FilesAndDirs.c.o CMakeFiles/predictors.dir/fort.c.o CMakeFiles/predictors.dir/ini.c.o CMakeFiles/predictors.dir/Memory.c.o CMakeFiles/predictors.dir/Menu.c.o CMakeFiles/predictors.dir/Ploter.c.o
+/Library/Developer/CommandLineTools/usr/bin/ranlib libpredictors.a

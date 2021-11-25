@@ -12,6 +12,7 @@
 #include "ini.h"
 #include "Errors.h"
 #include "FilesAndDirs.h"
+#include "Memory.h"
 
 
 #define WHITE "\x1B[0m" 
@@ -22,19 +23,23 @@
 
 typedef struct _Config* Config;
 
-Config initConfig(void);
+Config initConfig(char* userPath);
 
 Config freeConfig(Config configToFree);
 
 ERRORS_CODE configureApp(Config configApp);
 ERRORS_CODE configCommandSize(Config configApp);
 
-ERRORS_CODE createConfigFile(void);
+ERRORS_CODE createConfigFile(char* configFilePath);
 ERRORS_CODE reconfigureConfigFile(Config configApp);
 
 char* getColor(Config configApp);
 char* getColorSelection(Config configApp);
 uint8_t getTypeMenu(Config configApp);
+char* getPathCsvEntrDir(Config configApp);
+char* getCsvResutlsDir(Config configApp);
+char* getPloterResutlsDir(Config configApp);
+char* getConfigFilePath(Config configApp);
 
 ERRORS_CODE setColor(Config configApp);
 ERRORS_CODE setWidht(Config configApp);

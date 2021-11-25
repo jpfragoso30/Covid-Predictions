@@ -1,0 +1,3 @@
+/Users/randymarsh/Documents/Clase_TDA/Covid-Predictions/build/CMakeFiles/rebuild_cache.dir
+/Users/randymarsh/Documents/Clase_TDA/Covid-Predictions/build/CMakeFiles/edit_cache.dir
+/Users/randymarsh/Documents/Clase_TDA/Covid-Predictions/build/CMakeFiles/COVID_PREDICTIONS.dir

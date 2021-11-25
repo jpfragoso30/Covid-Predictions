@@ -47,7 +47,7 @@ struct _PF{
 
 
 
-PF initPF(uint8_t endValue, float width){
+PF initPF(uint8_t endValue, float width, char* userPath){
 
     PF newPF = NULL;
     newPF = malloc(sizeof(struct _PF));
@@ -71,7 +71,7 @@ PF initPF(uint8_t endValue, float width){
 
     newPF->csv = initCsvProccessing();
     newPF->menu = initMenu();
-    newPF->configApp = initConfig();
+    newPF->configApp = initConfig(userPath);
     
     newPF->seleccion = 0;
 
@@ -285,12 +285,12 @@ ERRORS_CODE setFileName(PF pf){
     fgets(newFileName, BUFSIZ, stdin);
 
     formatString(newFileName, '\n');
-    sprintf(newFileNameCsv, "CsvResults/%s.csv", newFileName);
+    sprintf(newFileNameCsv, "%s/%s.csv", getCsvResutlsDir(pf->configApp), newFileName);
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
    
-    sprintf(newFileNamePloter, "PlotersResult/%s.pdf", newFileName);
+    sprintf(newFileNamePloter, "%s/%s.pdf", getPloterResutlsDir(pf->configApp), newFileName);
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -308,13 +308,13 @@ static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char* newFileName){
         exit(EMPTY_STRUCT);
     }
 
-    sprintf(newFileNameCsv, "CsvResults/%s", newFileName);
+    sprintf(newFileNameCsv, "%s/%s", getCsvResutlsDir(pf->configApp), newFileName);
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
     formatString(newFileName, '.');
 
-    sprintf(newFileNamePloter, "PlotersResult/%s.pdf", newFileName);
+    sprintf(newFileNamePloter, "%s/%s.pdf", getPloterResutlsDir(pf->configApp), newFileName);
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -491,9 +491,9 @@ ERRORS_CODE controlador(PF pf){
 
 
 // REINICIA APP
-void restartApp(PF pf, char* nameExcutable){
+void restartApp(PF pf, char* nameExcutable, char* configFilePath){
 
-    createConfigFile();
+    createConfigFile(configFilePath);
     freePF(pf);
     
     puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
@@ -529,7 +529,7 @@ static ERRORS_CODE ploterState(PF pf){
     
     
     setNextState(pf, PREDICCION);
-    setMenuOptions(pf->menu, MENU_PLOTER);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
     //printMenu(pf->menu);
     dinamicMenuController(pf);
 
@@ -561,7 +561,7 @@ static ERRORS_CODE replotState(PF pf){
     
     
     setNextState(pf, PREDICCION);
-    setMenuOptions(pf->menu, MENU_PLOTER);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
     //printMenu(pf->menu);
     dinamicMenuController(pf);
 
@@ -595,7 +595,7 @@ static ERRORS_CODE ploterExistingFileState(PF pf){
     puts(pf->fileNameCsv);
     //printResultData(pf->csv, pf->fileNameCsv);
 
-    setMenuOptions(pf->menu, MENU_PLOTER);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
     setNextState(pf, PLOTER);
     //printMenu(pf->menu);
     dinamicMenuController(pf); 
@@ -608,10 +608,10 @@ static ERRORS_CODE ploterExistingFileState(PF pf){
 static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
 
 
-    if(setMenuOptions(pf->menu, MENU_REPLOT_FILE) == EMPTY_DIR){
+    if(setMenuOptions(pf->menu, MENU_REPLOT_FILE, getCsvResutlsDir(pf->configApp)) == EMPTY_DIR){
         setNextState(pf, MENU_P);
         pf->seleccion = -1;
-        setMenuOptions(pf->menu, MENU_PRINCIPAL);
+        setMenuOptions(pf->menu, MENU_PRINCIPAL, getCsvResutlsDir(pf->configApp));
         return EMPTY_DIR;
     }
 
@@ -625,7 +625,7 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
 
 static ERRORS_CODE configurationsMenuState(PF pf){
 
-    setMenuOptions(pf->menu, MENU_CONFS);
+    setMenuOptions(pf->menu, MENU_CONFS, getCsvResutlsDir(pf->configApp));
     //printMenu(pf->menu);
     dinamicMenuController(pf);
     setNextState(pf, CONFIGURACIONES);
@@ -636,7 +636,7 @@ static ERRORS_CODE configurationsMenuState(PF pf){
 
 static ERRORS_CODE colorsMenuState(PF pf){
     
-    setMenuOptions(pf->menu, MENU_COLORS);
+    setMenuOptions(pf->menu, MENU_COLORS, getCsvResutlsDir(pf->configApp));
     //printMenu(pf->menu);
     dinamicMenuController(pf);
 
@@ -654,7 +654,7 @@ static ERRORS_CODE backToMainMenuState(PF pf){
     setNextState(pf, MENU_P);
     pf->seleccion = 10;
     
-    setMenuOptions(pf->menu, MENU_PRINCIPAL);
+    setMenuOptions(pf->menu, MENU_PRINCIPAL, getCsvResutlsDir(pf->configApp));
     return ERROR_OK;
 }
 
