@@ -256,7 +256,7 @@ ERRORS_CODE setOptionFromState(PF pf){
         return ERROR_OK;
     }
         
-    
+    printf("-> ");
     if (fgets(line, sizeof(line), stdin)) {
         if (1 == sscanf(line, "%" SCNu8, &(temp))) 
             pf->seleccion = temp;
