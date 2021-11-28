@@ -62,3 +62,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# CMake Generated Files
+./build/CMakeFiles/*
+./build/Makefile
+./src/build/*
+
+# App Bin
+./build/COVID_PREDICTIONS

@@ -6,8 +6,6 @@ project(COVID_PREDICTIONS C)
 set(SRC /src/)
 set(LIBS /libs/)
 
-
-
 include_directories(.${LIBS})
 
 add_executable(COVID_PREDICTIONS main.c)

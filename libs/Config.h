@@ -14,15 +14,18 @@
 #include "FilesAndDirs.h"
 #include "Memory.h"
 
-
-#define WHITE "\x1B[0m" 
-#define RED "\x1B[31m" 
-#define GREEN "\x1B[32m" 
+#define WHITE "\x1B[0m"
+#define RED "\x1B[31m"
+#define GREEN "\x1B[32m"
 #define CYAN "\033[36m"
 
+typedef struct _Config *Config;
 
+<<<<<<< HEAD
 typedef struct _Config* Config;
 
+=======
+>>>>>>> main
 Config initConfig(char* userPath);
 
 Config freeConfig(Config configToFree);
@@ -33,8 +36,8 @@ ERRORS_CODE configCommandSize(Config configApp);
 ERRORS_CODE createConfigFile(char* configFilePath);
 ERRORS_CODE reconfigureConfigFile(Config configApp);
 
-char* getColor(Config configApp);
-char* getColorSelection(Config configApp);
+char *getColor(Config configApp);
+char *getColorSelection(Config configApp);
 uint8_t getTypeMenu(Config configApp);
 char* getPathCsvEntrDir(Config configApp);
 char* getCsvResutlsDir(Config configApp);

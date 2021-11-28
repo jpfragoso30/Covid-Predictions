@@ -1,28 +1,37 @@
 #include "../libs/Menu.h"
 
+<<<<<<< HEAD
 
 static ERRORS_CODE validateFile(const char* fileName);
 static ERRORS_CODE createMenuFiles(Menu menu, char* path);
+=======
+<<<<<<< HEAD
+static ERRORS_CODE validateFile(const char *fileName);
+static ERRORS_CODE createMenuFiles(Menu menu);
+=======
+>>>>>>> main
 
+static ERRORS_CODE validateFile(const char* fileName);
+static ERRORS_CODE createMenuFiles(Menu menu, char* path);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
+struct _Menu
+{
 
-struct _Menu{
-    
-    char** menuOptions;
+    char **menuOptions;
     uint8_t columns;
     uint8_t optionSelected;
     uint8_t numOptions;
-
 };
 
-
-
-Menu initMenu(void){
+Menu initMenu(void)
+{
 
     Menu newMenu = NULL;
     newMenu = malloc(sizeof(struct _Menu));
 
-    if(!newMenu){
+    if (!newMenu)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, MEM_ERROR);
         exit(MEM_ERROR);
     }
@@ -33,20 +42,18 @@ Menu initMenu(void){
     newMenu->columns = 10;
     newMenu->menuOptions = createStringArray(newMenu->menuOptions, newMenu->columns);
 
-
     return newMenu;
 }
 
+Menu freeMenu(Menu menuToFree)
+{
 
-
-
-Menu freeMenu(Menu menuToFree){
-
-    #if DEBUG_MODE
+#if DEBUG_MODE
     puts("free freeMenu");
-    #endif
+#endif
 
-    if(!menuToFree){
+    if (!menuToFree)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -59,11 +66,9 @@ Menu freeMenu(Menu menuToFree){
     return menuToFree;
 }
 
-
-
-
 // SETTERS
 
+<<<<<<< HEAD
 ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath){
 
     const char* list[4][7] = { 
@@ -74,34 +79,64 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath){
                         };
 
     if(!menu){
+=======
+<<<<<<< HEAD
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu)
+{
+=======
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
+
+    const char *list[4][7] = {
+        {"MAKE PREDICTION", "PLOTER", "CHANGE CONFIGURATIONS", "EXIT", NULL},
+        {"REPLOT", "MAIN MENU", "EXIT", NULL},
+        {"CHANGE COLOR", "CHANGE WIDOW SIZE", "CHANGE MENU TYPE", "RETURN TO MAIN MENU", "EXIT", NULL},
+        {"WHITE", "RED", "GREEN", "CYAN", "RETURN TO MAIN MENU", "EXIT", NULL}};
+
+    if (!menu)
+    {
+>>>>>>> main
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
 
     menu->numOptions = 0;
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    if (typemenu == MENU_REPLOT_FILE)
+        createMenuFiles(menu);
+    else
+    {
+=======
+>>>>>>> main
     if(typemenu == MENU_REPLOT_FILE)
         createMenuFiles(menu, userPath);
     else{
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
-        for(uint8_t i = 0; list[typemenu][i] != (void*)0; i++, menu->numOptions++){
+        for (uint8_t i = 0; list[typemenu][i] != (void *)0; i++, menu->numOptions++)
+        {
 
             menu->menuOptions[i] = createStrignSpace(menu->menuOptions[i], list[typemenu][i]);
             menu->menuOptions[i] = strdup(list[typemenu][i]);
-        }     
-    } 
+        }
+    }
 
     menu->menuOptions[menu->numOptions] = NULL;
 
-    if(menu->numOptions == 0)
+    if (menu->numOptions == 0)
         return EMPTY_DIR;
 
     return ERROR_OK;
 }
 
-ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection){
-    
-    if(!menuApp){
+ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection)
+{
+
+    if (!menuApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -113,9 +148,11 @@ ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection){
 
 // GETTERS
 
-uint8_t getNumOptions(Menu menuApp){
+uint8_t getNumOptions(Menu menuApp)
+{
 
-    if(!menuApp){
+    if (!menuApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -123,10 +160,11 @@ uint8_t getNumOptions(Menu menuApp){
     return menuApp->numOptions;
 }
 
+char *getFileNameOfMenuOptions(Menu menuApp, uint8_t optionsSelected)
+{
 
-char* getFileNameOfMenuOptions(Menu menuApp, uint8_t optionsSelected){
-
-    if(!menuApp){
+    if (!menuApp)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
@@ -136,36 +174,35 @@ char* getFileNameOfMenuOptions(Menu menuApp, uint8_t optionsSelected){
 
 // VISTAS
 
-
-void printMenu(Menu menuApp){
+void printMenu(Menu menuApp)
+{
 
     puts("");
 
-    for(uint8_t i = 0; menuApp->menuOptions[i] != (void*)0; i++)
+    for (uint8_t i = 0; menuApp->menuOptions[i] != (void *)0; i++)
         printf("\t\t\t[%d]%s\n", i + 1, menuApp->menuOptions[i]);
-
 }
 
+void updateMenu(Menu menuApp, char *color, char *colorSelection)
+{
 
-void updateMenu(Menu menuApp, char* color, char* colorSelection){
+    puts("");
+    for (uint8_t i = 0; menuApp->menuOptions[i] != (void *)0; i++)
+    {
 
-	puts("");
-    for(uint8_t i = 0; menuApp->menuOptions[i] != (void*)0; i++){
-        
-        if(menuApp->optionSelected == i)
+        if (menuApp->optionSelected == i)
             printf("\t\t\t%s[██] %s\n", colorSelection, menuApp->menuOptions[i]);
-        else 
+        else
             printf("\t\t\t%s[  ] %s\n", color, menuApp->menuOptions[i]);
     }
 
-	printf("\n\n\n\n %sTO MOVE UP PRESS [W/w], TO MODE DOWN [S/s] AND TO SELECT OPTION PRESS [X/x]\n", colorSelection);
-	puts(color);
+    printf("\n\n\n\n %sTO MOVE UP PRESS [W/w], TO MODE DOWN [S/s] AND TO SELECT OPTION PRESS [X/x]\n", colorSelection);
+    puts(color);
 }
 
+void printHeader(void)
+{
 
-
-void printHeader(void){
-    
     system("clear");
     puts("░█████╗░░█████╗░██╗░░░██╗██╗██████╗░");
     puts("██╔══██╗██╔══██╗██║░░░██║██║██╔══██╗");
@@ -182,65 +219,75 @@ void printHeader(void){
     puts("\t\t╚═╝░░░░░╚═╝░░╚═╝╚══════╝╚═════╝░╚═╝░╚════╝░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝╚═════╝░");
 }
 
-
-
-
-
 // STATICS
 
+<<<<<<< HEAD
 static ERRORS_CODE createMenuFiles(Menu menu, char* path){
+=======
+<<<<<<< HEAD
+static ERRORS_CODE createMenuFiles(Menu menu)
+{
+=======
+static ERRORS_CODE createMenuFiles(Menu menu, char* path){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
+>>>>>>> main
 
-    
     DIR *dr = NULL;
     struct dirent *en;
 
-    if(!menu){
+    if (!menu)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
     }
-    
 
+<<<<<<< HEAD
     dr = opendir(path);
+=======
+<<<<<<< HEAD
+    dr = opendir("./Covid-Predictions/CsvResults/");
+=======
+    dr = opendir(path);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
+>>>>>>> main
 
-    if(dr == NULL){
+    if (dr == NULL)
+    {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, INVALID_DIR);
         exit(INVALID_DIR);
     }
 
+    while ((en = readdir(dr)) != NULL)
+    {
 
-    while ((en = readdir(dr)) != NULL){
+        if (validateFile(en->d_name) == ERROR_OK)
+        {
 
-        if(validateFile(en->d_name) == ERROR_OK){
-            
-            if(menu->numOptions >= menu->columns){
+            if (menu->numOptions >= menu->columns)
+            {
                 menu->menuOptions = setMoreColumnsString(menu->menuOptions, menu->columns);
                 menu->columns *= 2;
             }
-            
+
             menu->menuOptions[menu->numOptions] = createStrignSpace(menu->menuOptions[menu->numOptions], en->d_name);
             menu->menuOptions[menu->numOptions] = strdup(en->d_name);
             menu->numOptions++;
         }
     }
-    
 
     closedir(dr);
     return ERROR_OK;
 }
 
+static ERRORS_CODE validateFile(const char *fileName)
+{
 
+    const char *coincidence = strstr(fileName, ".csv");
 
-
-static ERRORS_CODE validateFile(const char* fileName){
-
-    const char* coincidence = strstr(fileName, ".csv");
-
-    if(!coincidence)
+    if (!coincidence)
         return INVALID_FILE;
-    if(strcmp(".csv", coincidence) == 0 || strcmp(".CSV", coincidence) == 0)
+    if (strcmp(".csv", coincidence) == 0 || strcmp(".CSV", coincidence) == 0)
         return ERROR_OK;
-    
+
     return INVALID_FILE;
 }
-
-

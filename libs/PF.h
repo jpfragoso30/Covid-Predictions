@@ -6,20 +6,18 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <ctype.h>
+#include "Menu.h"
 #include "Errors.h"
 #include "CsvProcessing.h"
 #include "Memory.h"
-#include "Menu.h"
 #include "Euler.h"
 #include "Config.h"
 #include "Ploter.h"
 
+typedef struct _PF *PF;
 
-
-typedef struct _PF* PF;
-
-
-typedef enum states{
+typedef enum states
+{
 
     MENU_P,
     PREDICCION,
@@ -29,8 +27,8 @@ typedef enum states{
     PLOTER_SELECT_FILE,
     CONFIG_MENU,
     COLORS_MENU,
-    
-}STATES;
+
+} STATES;
 
 // Constructor
 PF initPF(uint8_t endValue, float width, char* userPath);
@@ -47,9 +45,10 @@ ERRORS_CODE setYCero(PF pf, float yCero);
 ERRORS_CODE setNextState(PF pf, STATES newProcess);
 ERRORS_CODE setOptionFromState(PF pf);
 
+
 // GETTERS
-float* getTiempo(PF pf);
-float* getY(PF pf);
+float *getTiempo(PF pf);
+float *getY(PF pf);
 float getEndValue(PF pf);
 float getWidth(PF pf);
 float getTiempoValue(PF pf, uint8_t index);
@@ -58,12 +57,17 @@ Menu getMenuStruct(PF pf);
 CsvProcessing getCsvProcessingStruct(PF pf);
 Config getConfigStruct(PF pf);
 
-
 // CONTROLADOR
 ERRORS_CODE controlador(PF pf);
 
-
 //REINICIA LA APP
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+void restartApp(PF pf, char* nameExecutable);
+=======
+>>>>>>> main
 void restartApp(PF pf, char* nameExcutable, char* configFilePath);
 
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 #endif

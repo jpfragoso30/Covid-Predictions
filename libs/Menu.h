@@ -9,10 +9,10 @@
 #include "Errors.h"
 #include "Memory.h"
 
+typedef struct _Menu *Menu;
 
-typedef struct _Menu* Menu;
-
-typedef enum menu{
+typedef enum menu
+{
 
     MENU_PRINCIPAL,
     MENU_PLOTER,
@@ -20,8 +20,7 @@ typedef enum menu{
     MENU_COLORS,
     MENU_REPLOT_FILE,
 
-}TYPEMENU;
-
+} TYPEMENU;
 
 Menu initMenu(void);
 Menu freeMenu(Menu menuToFree);
@@ -39,6 +38,6 @@ ERRORS_CODE setMenuSelection(Menu menuApp, uint8_t newSelection);
 
 // GETTERS
 uint8_t getNumOptions(Menu menuApp);
-char* getFileNameOfMenuOptions(Menu menuApp, uint8_t optionsSelected);
+char *getFileNameOfMenuOptions(Menu menuApp, uint8_t optionsSelected);
 
 #endif
