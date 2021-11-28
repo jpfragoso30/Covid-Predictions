@@ -45,8 +45,14 @@ struct _PF
     Config configApp;
 };
 
+<<<<<<< HEAD
 PF initPF(uint8_t endValue, float width)
 {
+=======
+
+
+PF initPF(uint8_t endValue, float width, char* userPath){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     PF newPF = NULL;
     newPF = malloc(sizeof(struct _PF));
@@ -70,8 +76,13 @@ PF initPF(uint8_t endValue, float width)
 
     newPF->csv = initCsvProccessing();
     newPF->menu = initMenu();
+<<<<<<< HEAD
     newPF->configApp = initConfig();
 
+=======
+    newPF->configApp = initConfig(userPath);
+    
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     newPF->seleccion = 0;
 
     newPF->functionByProcess[MENU_P][0] = &menuPrincipalState;
@@ -262,10 +273,17 @@ ERRORS_CODE setOptionFromState(PF pf)
         pf->seleccion = 0;
         return ERROR_OK;
     }
+<<<<<<< HEAD
 
     if (fgets(line, sizeof(line), stdin))
     {
         if (1 == sscanf(line, "%" SCNu8, &(temp)))
+=======
+        
+    printf("-> ");
+    if (fgets(line, sizeof(line), stdin)) {
+        if (1 == sscanf(line, "%" SCNu8, &(temp))) 
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
             pf->seleccion = temp;
         else
             pf->seleccion = -1;
@@ -293,11 +311,20 @@ ERRORS_CODE setFileName(PF pf)
     fgets(newFileName, BUFSIZ, stdin);
 
     formatString(newFileName, '\n');
+<<<<<<< HEAD
     sprintf(newFileNameCsv, "./Covid-Predictions/CsvResults/%s.csv", newFileName);
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
     sprintf(newFileNamePloter, "./Covid-Predictions/PlotersResult/%s.pdf", newFileName);
+=======
+    sprintf(newFileNameCsv, "%s/%s.csv", getCsvResutlsDir(pf->configApp), newFileName);
+    pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
+    pf->fileNameCsv = strdup(newFileNameCsv);
+
+   
+    sprintf(newFileNamePloter, "%s/%s.pdf", getPloterResutlsDir(pf->configApp), newFileName);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -316,13 +343,21 @@ static ERRORS_CODE setFileNameFromMenuOptions(PF pf, char *newFileName)
         exit(EMPTY_STRUCT);
     }
 
+<<<<<<< HEAD
     sprintf(newFileNameCsv, "./Covid-Predictions/CsvResults/%s", newFileName);
+=======
+    sprintf(newFileNameCsv, "%s/%s", getCsvResutlsDir(pf->configApp), newFileName);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     pf->fileNameCsv = createStrignSpace(pf->fileNameCsv, newFileNameCsv);
     pf->fileNameCsv = strdup(newFileNameCsv);
 
     formatString(newFileName, '.');
 
+<<<<<<< HEAD
     sprintf(newFileNamePloter, "./Covid-Predictions/PlotersResult/%s.pdf", newFileName);
+=======
+    sprintf(newFileNamePloter, "%s/%s.pdf", getPloterResutlsDir(pf->configApp), newFileName);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     pf->fileNamePlot = createStrignSpace(pf->fileNamePlot, newFileNamePloter);
     pf->fileNamePlot = strdup(newFileNamePloter);
 
@@ -504,25 +539,40 @@ ERRORS_CODE controlador(PF pf)
 
 
 // REINICIA APP
+<<<<<<< HEAD
 void restartApp(PF pf, char* nameExecutable)
 {
+=======
+void restartApp(PF pf, char* nameExcutable, char* configFilePath){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
-    createConfigFile();
+    createConfigFile(configFilePath);
     freePF(pf);
 
     puts("THE APP NEEDS TO RESTART\n PLEASE PRESS ENTER");
     getchar();
 
+<<<<<<< HEAD
     system(nameExecutable);
+=======
+    puts(nameExcutable);
+    system(nameExcutable);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     exit(CONFIG_FILE_NOT_FOUND);
 }
 
 // STATICS
 
+<<<<<<< HEAD
 static ERRORS_CODE menuPrincipalState(PF pf)
 {
 
     //printMenu(pf->menu);
+=======
+static ERRORS_CODE menuPrincipalState(PF pf){
+    
+    
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -537,8 +587,8 @@ static ERRORS_CODE ploterState(PF pf)
     plotResults(pf->fileNamePlot, pf->fileNameCsv, pf->tiempo, pf->y, pf->endValue);
 
     setNextState(pf, PREDICCION);
-    setMenuOptions(pf->menu, MENU_PLOTER);
-    //printMenu(pf->menu);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
+    
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -567,8 +617,8 @@ static ERRORS_CODE replotState(PF pf)
     //printResultData(pf->csv, pf->fileNameCsv);
 
     setNextState(pf, PREDICCION);
-    setMenuOptions(pf->menu, MENU_PLOTER);
-    //printMenu(pf->menu);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
+    
     dinamicMenuController(pf);
 
     return ERROR_OK;
@@ -585,7 +635,7 @@ static ERRORS_CODE exitState(PF pf)
 {
 
     freePF(pf);
-    exit(ERROR_OK);
+    exit(0);
 }
 
 static ERRORS_CODE ploterExistingFileState(PF pf)
@@ -600,10 +650,16 @@ static ERRORS_CODE ploterExistingFileState(PF pf)
     puts(pf->fileNameCsv);
     //printResultData(pf->csv, pf->fileNameCsv);
 
-    setMenuOptions(pf->menu, MENU_PLOTER);
+    setMenuOptions(pf->menu, MENU_PLOTER, getCsvResutlsDir(pf->configApp));
     setNextState(pf, PLOTER);
+<<<<<<< HEAD
     //printMenu(pf->menu);
     dinamicMenuController(pf);
+=======
+    
+    dinamicMenuController(pf); 
+    
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     return ERROR_OK;
 }
@@ -611,15 +667,22 @@ static ERRORS_CODE ploterExistingFileState(PF pf)
 static ERRORS_CODE ploterExistingFileStateMenu(PF pf)
 {
 
+<<<<<<< HEAD
     if (setMenuOptions(pf->menu, MENU_REPLOT_FILE) == EMPTY_DIR)
     {
+=======
+static ERRORS_CODE ploterExistingFileStateMenu(PF pf){
+
+
+    if(setMenuOptions(pf->menu, MENU_REPLOT_FILE, getCsvResutlsDir(pf->configApp)) == EMPTY_DIR){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
         setNextState(pf, MENU_P);
         pf->seleccion = -1;
-        setMenuOptions(pf->menu, MENU_PRINCIPAL);
+        setMenuOptions(pf->menu, MENU_PRINCIPAL, getCsvResutlsDir(pf->configApp));
         return EMPTY_DIR;
     }
 
-    //printMenu(pf->menu);
+    
     dinamicMenuController(pf);
 
     setNextState(pf, PLOTER_SELECT_FILE);
@@ -629,8 +692,8 @@ static ERRORS_CODE ploterExistingFileStateMenu(PF pf)
 static ERRORS_CODE configurationsMenuState(PF pf)
 {
 
-    setMenuOptions(pf->menu, MENU_CONFS);
-    //printMenu(pf->menu);
+    setMenuOptions(pf->menu, MENU_CONFS, getCsvResutlsDir(pf->configApp));
+    
     dinamicMenuController(pf);
     setNextState(pf, CONFIGURACIONES);
 
@@ -640,8 +703,15 @@ static ERRORS_CODE configurationsMenuState(PF pf)
 static ERRORS_CODE colorsMenuState(PF pf)
 {
 
+<<<<<<< HEAD
     setMenuOptions(pf->menu, MENU_COLORS);
     //printMenu(pf->menu);
+=======
+static ERRORS_CODE colorsMenuState(PF pf){
+    
+    setMenuOptions(pf->menu, MENU_COLORS, getCsvResutlsDir(pf->configApp));
+    
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     dinamicMenuController(pf);
 
     setNextState(pf, COLORS_MENU);
@@ -656,8 +726,13 @@ static ERRORS_CODE backToMainMenuState(PF pf)
 
     setNextState(pf, MENU_P);
     pf->seleccion = 10;
+<<<<<<< HEAD
 
     setMenuOptions(pf->menu, MENU_PRINCIPAL);
+=======
+    
+    setMenuOptions(pf->menu, MENU_PRINCIPAL, getCsvResutlsDir(pf->configApp));
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
     return ERROR_OK;
 }
 

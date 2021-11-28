@@ -62,3 +62,21 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# CMake Generated Files
+*.cmake
+*.txt
+*.log
+Makefile2
+*.bin
+CMakeCCompilerID.c
+*.make
+*.check_cache
+Makefile2 2
+*.marks
+CMakeCCompilerID 2.c
+*.cpp
+*.internal
+*.ts
+./build/Makefile
+./src/build/Makefile

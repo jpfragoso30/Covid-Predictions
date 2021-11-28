@@ -1,7 +1,13 @@
 #include "../libs/Menu.h"
 
+<<<<<<< HEAD
 static ERRORS_CODE validateFile(const char *fileName);
 static ERRORS_CODE createMenuFiles(Menu menu);
+=======
+
+static ERRORS_CODE validateFile(const char* fileName);
+static ERRORS_CODE createMenuFiles(Menu menu, char* path);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
 struct _Menu
 {
@@ -56,8 +62,12 @@ Menu freeMenu(Menu menuToFree)
 
 // SETTERS
 
+<<<<<<< HEAD
 ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu)
 {
+=======
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char* userPath){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     const char *list[4][7] = {
         {"MAKE PREDICTION", "PLOTER", "CHANGE CONFIGURATIONS", "EXIT", NULL},
@@ -73,10 +83,16 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu)
 
     menu->numOptions = 0;
 
+<<<<<<< HEAD
     if (typemenu == MENU_REPLOT_FILE)
         createMenuFiles(menu);
     else
     {
+=======
+    if(typemenu == MENU_REPLOT_FILE)
+        createMenuFiles(menu, userPath);
+    else{
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
         for (uint8_t i = 0; list[typemenu][i] != (void *)0; i++, menu->numOptions++)
         {
@@ -183,8 +199,12 @@ void printHeader(void)
 
 // STATICS
 
+<<<<<<< HEAD
 static ERRORS_CODE createMenuFiles(Menu menu)
 {
+=======
+static ERRORS_CODE createMenuFiles(Menu menu, char* path){
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     DIR *dr = NULL;
     struct dirent *en;
@@ -195,7 +215,11 @@ static ERRORS_CODE createMenuFiles(Menu menu)
         exit(EMPTY_STRUCT);
     }
 
+<<<<<<< HEAD
     dr = opendir("./Covid-Predictions/CsvResults/");
+=======
+    dr = opendir(path);
+>>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     if (dr == NULL)
     {
