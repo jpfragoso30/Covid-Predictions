@@ -6,10 +6,10 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <ctype.h>
-#include "Menu.h"
 #include "Errors.h"
 #include "CsvProcessing.h"
 #include "Memory.h"
+#include "Menu.h"
 #include "Euler.h"
 #include "Config.h"
 #include "Ploter.h"

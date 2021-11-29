@@ -3,9 +3,6 @@
 static ERRORS_CODE validateFile(const char *fileName);
 static ERRORS_CODE createMenuFiles(Menu menu, char *path);
 
-static ERRORS_CODE validateFile(const char *fileName);
-static ERRORS_CODE createMenuFiles(Menu menu, char *path);
-
 struct _Menu
 {
 
@@ -58,6 +55,7 @@ Menu freeMenu(Menu menuToFree)
 }
 
 // SETTERS
+
 ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char *userPath)
 {
 

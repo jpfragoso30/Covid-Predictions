@@ -12,14 +12,15 @@ struct _Config
     uint8_t height;
     uint8_t numColor;
     uint8_t typeMenu;
-    const char *dirPloters;
-    const char *dirCsvsResults;
-    const char *dirsCsvEntrenamiento;
-    const char *configFile;
+    char *dirPloters;
+    char *dirCsvsResults;
+    char *dirsCsvEntrenamiento;
+    char *configFile;
 };
 
 Config initConfig(char *userPath)
 {
+
     Config newConfig = NULL;
     newConfig = malloc(sizeof(struct _Config));
 
@@ -32,7 +33,6 @@ Config initConfig(char *userPath)
     newConfig->width = -1;
     newConfig->height = -1;
     newConfig->typeMenu = 0;
-
     newConfig->dirPloters = createStrignSpace(newConfig->dirPloters, createDynamicPath("PlotersResult", userPath));
     newConfig->dirPloters = strdup(createDynamicPath("PlotersResult", userPath));
 
@@ -134,7 +134,6 @@ ERRORS_CODE createConfigFile(char *configFilePath)
     char date[20];
 
     stat(configFilePath, &attrib);
-
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CREATED AT: %s\n\n", date);
@@ -151,12 +150,12 @@ ERRORS_CODE createConfigFile(char *configFilePath)
 
 ERRORS_CODE reconfigureConfigFile(Config configApp)
 {
+
     FILE *configFile = openFile(configApp->configFile, WRITE);
     struct stat attrib;
     char date[20];
 
     stat(configApp->configFile, &attrib);
-
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CHANGE AT: %s\n\n", date);
@@ -230,6 +229,8 @@ char *getColorSelection(Config configApp)
     }
 }
 
+// GETTERS
+
 uint8_t getTypeMenu(Config configApp)
 {
 
@@ -254,18 +255,6 @@ char *getCsvResutlsDir(Config configApp)
     return configApp->dirCsvsResults;
 }
 
-char *getPathCsvEntrDir(Config configApp)
-{
-
-    if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-
-    return configApp->dirsCsvEntrenamiento;
-}
-
 char *getPloterResutlsDir(Config configApp)
 {
 
@@ -276,6 +265,18 @@ char *getPloterResutlsDir(Config configApp)
     }
 
     return configApp->dirPloters;
+}
+
+char *getPathCsvEntrDir(Config configApp)
+{
+
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->dirsCsvEntrenamiento;
 }
 
 char *getConfigFilePath(Config configApp)

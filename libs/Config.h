@@ -21,8 +21,6 @@
 
 typedef struct _Config *Config;
 
-typedef struct _Config *Config;
-
 Config initConfig(char *userPath);
 
 Config freeConfig(Config configToFree);
