@@ -31,11 +31,10 @@ typedef enum states
 } STATES;
 
 // Constructor
-PF initPF(uint8_t endValue, float width, char* userPath);
+PF initPF(uint8_t endValue, float width, char *userPath);
 
 // Destructor
 PF freePF(PF PfToFree);
-
 
 // SETTERS
 ERRORS_CODE setValueInTiempo(PF pf, float newValue, uint8_t index);
@@ -44,7 +43,6 @@ ERRORS_CODE setTiempoCero(PF pf, float xCero);
 ERRORS_CODE setYCero(PF pf, float yCero);
 ERRORS_CODE setNextState(PF pf, STATES newProcess);
 ERRORS_CODE setOptionFromState(PF pf);
-
 
 // GETTERS
 float *getTiempo(PF pf);
@@ -61,13 +59,6 @@ Config getConfigStruct(PF pf);
 ERRORS_CODE controlador(PF pf);
 
 //REINICIA LA APP
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-void restartApp(PF pf, char* nameExecutable);
-=======
->>>>>>> main
-void restartApp(PF pf, char* nameExcutable, char* configFilePath);
+void restartApp(PF pf, char *nameExcutable, char *configFilePath);
 
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 #endif

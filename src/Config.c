@@ -3,48 +3,23 @@
 ERRORS_CODE static setConfigurations(Config configApp);
 static ERRORS_CODE checkConfig(Config configApp);
 static ERRORS_CODE checkDirs(Config configApp);
-<<<<<<< HEAD
-static char* createDynamicPath(char* fileOrDir, char* userPath);
-=======
-<<<<<<< HEAD
+static char *createDynamicPath(char *fileOrDir, char *userPath);
 
 struct _Config
 {
-=======
-static char* createDynamicPath(char* fileOrDir, char* userPath);
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main
 
     uint8_t width;
     uint8_t height;
     uint8_t numColor;
     uint8_t typeMenu;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
     const char *dirPloters;
     const char *dirCsvsResults;
     const char *dirsCsvEntrenamiento;
+    const char *configFile;
 };
 
-Config initConfig(void)
+Config initConfig(char *userPath)
 {
-=======
->>>>>>> main
-    char* dirPloters;
-    char* dirCsvsResults;
-    char* dirsCsvEntrenamiento;
-    char* configFile;
-
-};
-
-
-Config initConfig(char* userPath){
-<<<<<<< HEAD
-=======
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main
-
     Config newConfig = NULL;
     newConfig = malloc(sizeof(struct _Config));
 
@@ -57,14 +32,7 @@ Config initConfig(char* userPath){
     newConfig->width = -1;
     newConfig->height = -1;
     newConfig->typeMenu = 0;
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    newConfig->dirPloters = "./Covid-Predictions/PlotersResult";
-    newConfig->dirCsvsResults = "./Covid-Predictions/CsvResults";
-    newConfig->dirsCsvEntrenamiento = "./Covid-Predictions/CsvEntr";
-=======
->>>>>>> main
+
     newConfig->dirPloters = createStrignSpace(newConfig->dirPloters, createDynamicPath("PlotersResult", userPath));
     newConfig->dirPloters = strdup(createDynamicPath("PlotersResult", userPath));
 
@@ -76,10 +44,6 @@ Config initConfig(char* userPath){
 
     newConfig->configFile = createStrignSpace(newConfig->configFile, createDynamicPath("config.ini", userPath));
     newConfig->configFile = strdup(createDynamicPath("config.ini", userPath));
-<<<<<<< HEAD
-=======
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main
 
     return newConfig;
 }
@@ -90,18 +54,6 @@ Config freeConfig(Config configToFree)
 #if DEBUG_MODE
     puts("free Config Struct");
 #endif
-
-    free(configToFree->dirCsvsResults);
-    configToFree->dirCsvsResults = NULL;
-
-    free(configToFree->configFile);
-    configToFree->configFile = NULL;
-
-    free(configToFree->dirPloters);
-    configToFree->dirPloters = NULL;
-
-    free(configToFree->dirsCsvEntrenamiento);
-    configToFree->dirsCsvEntrenamiento = NULL;
 
     free(configToFree->dirCsvsResults);
     configToFree->dirCsvsResults = NULL;
@@ -151,14 +103,8 @@ ERRORS_CODE static setConfigurations(Config configApp)
         exit(EMPTY_STRUCT);
     }
 
-<<<<<<< HEAD
-    configIni = ini_load("./Covid-Predictions/config.ini");
-    if (configIni == NULL)
-=======
-    
     configIni = ini_load(configApp->configFile);
-    if(configIni == NULL)
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
+    if (configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
     ini_sget(configIni, "app", "menu", "%hhu", &configApp->typeMenu);
@@ -180,30 +126,15 @@ ERRORS_CODE static setConfigurations(Config configApp)
     return ERROR_OK;
 }
 
-ERRORS_CODE createConfigFile(void)
+ERRORS_CODE createConfigFile(char *configFilePath)
 {
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
+    FILE *configFile = openFile(configFilePath, WRITE);
     struct stat attrib;
     char date[20];
 
-    stat("../config.ini", &attrib);
-=======
->>>>>>> main
-ERRORS_CODE createConfigFile(char* configFilePath){
-    
-    FILE* configFile = openFile(configFilePath, WRITE);
-    struct stat attrib;
-    char date[20];   
-    
     stat(configFilePath, &attrib);
-<<<<<<< HEAD
-=======
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main
+
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CREATED AT: %s\n\n", date);
@@ -220,26 +151,12 @@ ERRORS_CODE createConfigFile(char* configFilePath){
 
 ERRORS_CODE reconfigureConfigFile(Config configApp)
 {
-
-<<<<<<< HEAD
-    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
+    FILE *configFile = openFile(configApp->configFile, WRITE);
     struct stat attrib;
     char date[20];
 
-<<<<<<< HEAD
-=======
-    stat("../config.ini", &attrib);
-=======
->>>>>>> main
-    FILE* configFile = openFile(configApp->configFile, WRITE);
-    struct stat attrib;
-    char date[20];   
-    
     stat(configApp->configFile, &attrib);
-<<<<<<< HEAD
-=======
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main
+
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CHANGE AT: %s\n\n", date);
@@ -295,7 +212,6 @@ char *getColorSelection(Config configApp)
         return RED;
         break;
 
-<<<<<<< HEAD
     case 1:
         return WHITE;
         break;
@@ -303,9 +219,6 @@ char *getColorSelection(Config configApp)
     case 2:
         return CYAN;
         break;
-=======
-// GETTERS
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
 
     case 3:
         return GREEN;
@@ -329,61 +242,8 @@ uint8_t getTypeMenu(Config configApp)
     return configApp->typeMenu;
 }
 
-
-
-char* getCsvResutlsDir(Config configApp){
-
-    if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-
-    return configApp->dirCsvsResults;
-}
-
-
-char* getPloterResutlsDir(Config configApp){
-
-    if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-
-    return configApp->dirPloters;
-}
-
-<<<<<<< HEAD
-// GETTERS
-=======
-
-char* getPathCsvEntrDir(Config configApp){
-
-    if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
->>>>>>> main
-
-    return configApp->dirsCsvEntrenamiento;
-}
-
-char* getConfigFilePath(Config configApp){
-
-     if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-
-    return configApp->configFile;
-}
-
-
-
-char* getCsvResutlsDir(Config configApp){
+char *getCsvResutlsDir(Config configApp)
+{
 
     if (!configApp)
     {
@@ -394,20 +254,8 @@ char* getCsvResutlsDir(Config configApp){
     return configApp->dirCsvsResults;
 }
 
-
-char* getPloterResutlsDir(Config configApp){
-
-    if (!configApp)
-    {
-        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
-        exit(EMPTY_STRUCT);
-    }
-
-    return configApp->dirPloters;
-}
-
-
-char* getPathCsvEntrDir(Config configApp){
+char *getPathCsvEntrDir(Config configApp)
+{
 
     if (!configApp)
     {
@@ -418,9 +266,22 @@ char* getPathCsvEntrDir(Config configApp){
     return configApp->dirsCsvEntrenamiento;
 }
 
-char* getConfigFilePath(Config configApp){
+char *getPloterResutlsDir(Config configApp)
+{
 
-     if (!configApp)
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->dirPloters;
+}
+
+char *getConfigFilePath(Config configApp)
+{
+
+    if (!configApp)
     {
         fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
         exit(EMPTY_STRUCT);
@@ -576,48 +437,29 @@ static ERRORS_CODE checkConfig(Config configApp)
 
     return ERROR_OK;
 }
-<<<<<<< HEAD
-=======
 
-
-static char* createDynamicPath(char* fileOrDir, char* userPath){
+static char *createDynamicPath(char *fileOrDir, char *userPath)
+{
 
     char newPath[BUFSIZ];
     uint8_t numSlashes = 0;
 
-    for(uint8_t i = 0; i < strlen(userPath); i++){
-        if(userPath[i] == '/')
+    for (uint8_t i = 0; i < strlen(userPath); i++)
+    {
+        if (userPath[i] == '/')
             numSlashes++;
     }
 
-<<<<<<< HEAD
-static char* createDynamicPath(char* fileOrDir, char* userPath){
-
-    char newPath[BUFSIZ];
-    uint8_t numSlashes = 0;
-
-    for(uint8_t i = 0; i < strlen(userPath); i++){
-        if(userPath[i] == '/')
-            numSlashes++;
-    }
-
-=======
->>>>>>> main
-    if(numSlashes == 1) 
+    if (numSlashes == 1)
         sprintf(newPath, "../%s", fileOrDir);
 
-    else if(numSlashes == 2)
+    else if (numSlashes == 2)
         return fileOrDir;
 
     else
         sprintf(newPath, "./Covid-Predictions/%s", fileOrDir);
-        
+
     puts(newPath);
     puts(userPath);
     return strdup(newPath);
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 2d4d84f7217a6f6e7a9bbe694beef065ea9463dc
->>>>>>> main

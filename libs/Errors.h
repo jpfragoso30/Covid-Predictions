@@ -10,11 +10,6 @@
 
 // para debugear las liberaciones de memoria
 #define DEBUG_MODE 0
-<<<<<<< HEAD
-
-=======
->>>>>>> main
-
 
 typedef enum errors
 {
