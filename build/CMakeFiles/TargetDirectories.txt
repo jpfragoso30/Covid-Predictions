@@ -1,3 +1,0 @@
-/Users/frags/Desktop/5tosemestre/TDA/Covid_Predictions/build/CMakeFiles/rebuild_cache.dir
-/Users/frags/Desktop/5tosemestre/TDA/Covid_Predictions/build/CMakeFiles/edit_cache.dir
-/Users/frags/Desktop/5tosemestre/TDA/Covid_Predictions/build/CMakeFiles/COVID_PREDICTIONS.dir

@@ -3,6 +3,7 @@
 ERRORS_CODE static setConfigurations(Config configApp);
 static ERRORS_CODE checkConfig(Config configApp);
 static ERRORS_CODE checkDirs(Config configApp);
+static char *createDynamicPath(char *fileOrDir, char *userPath);
 
 struct _Config
 {
@@ -11,12 +12,13 @@ struct _Config
     uint8_t height;
     uint8_t numColor;
     uint8_t typeMenu;
-    const char *dirPloters;
-    const char *dirCsvsResults;
-    const char *dirsCsvEntrenamiento;
+    char *dirPloters;
+    char *dirCsvsResults;
+    char *dirsCsvEntrenamiento;
+    char *configFile;
 };
 
-Config initConfig(void)
+Config initConfig(char *userPath)
 {
 
     Config newConfig = NULL;
@@ -31,9 +33,17 @@ Config initConfig(void)
     newConfig->width = -1;
     newConfig->height = -1;
     newConfig->typeMenu = 0;
-    newConfig->dirPloters = "./Covid-Predictions/PlotersResult";
-    newConfig->dirCsvsResults = "./Covid-Predictions/CsvResults";
-    newConfig->dirsCsvEntrenamiento = "./Covid-Predictions/CsvEntr";
+    newConfig->dirPloters = createStrignSpace(newConfig->dirPloters, createDynamicPath("PlotersResult", userPath));
+    newConfig->dirPloters = strdup(createDynamicPath("PlotersResult", userPath));
+
+    newConfig->dirCsvsResults = createStrignSpace(newConfig->dirCsvsResults, createDynamicPath("CsvResults", userPath));
+    newConfig->dirCsvsResults = strdup(createDynamicPath("CsvResults", userPath));
+
+    newConfig->dirsCsvEntrenamiento = createStrignSpace(newConfig->dirsCsvEntrenamiento, createDynamicPath("CsvEntr", userPath));
+    newConfig->dirsCsvEntrenamiento = strdup(createDynamicPath("CsvEntr", userPath));
+
+    newConfig->configFile = createStrignSpace(newConfig->configFile, createDynamicPath("config.ini", userPath));
+    newConfig->configFile = strdup(createDynamicPath("config.ini", userPath));
 
     return newConfig;
 }
@@ -44,6 +54,18 @@ Config freeConfig(Config configToFree)
 #if DEBUG_MODE
     puts("free Config Struct");
 #endif
+
+    free(configToFree->dirCsvsResults);
+    configToFree->dirCsvsResults = NULL;
+
+    free(configToFree->configFile);
+    configToFree->configFile = NULL;
+
+    free(configToFree->dirPloters);
+    configToFree->dirPloters = NULL;
+
+    free(configToFree->dirsCsvEntrenamiento);
+    configToFree->dirsCsvEntrenamiento = NULL;
 
     free(configToFree);
     configToFree = NULL;
@@ -81,7 +103,7 @@ ERRORS_CODE static setConfigurations(Config configApp)
         exit(EMPTY_STRUCT);
     }
 
-    configIni = ini_load("./Covid-Predictions/config.ini");
+    configIni = ini_load(configApp->configFile);
     if (configIni == NULL)
         return CONFIG_FILE_NOT_FOUND;
 
@@ -104,14 +126,14 @@ ERRORS_CODE static setConfigurations(Config configApp)
     return ERROR_OK;
 }
 
-ERRORS_CODE createConfigFile(void)
+ERRORS_CODE createConfigFile(char *configFilePath)
 {
 
-    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
+    FILE *configFile = openFile(configFilePath, WRITE);
     struct stat attrib;
     char date[20];
 
-    stat("../config.ini", &attrib);
+    stat(configFilePath, &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CREATED AT: %s\n\n", date);
@@ -129,11 +151,11 @@ ERRORS_CODE createConfigFile(void)
 ERRORS_CODE reconfigureConfigFile(Config configApp)
 {
 
-    FILE *configFile = openFile("./Covid-Predictions/config.ini", WRITE);
+    FILE *configFile = openFile(configApp->configFile, WRITE);
     struct stat attrib;
     char date[20];
 
-    stat("../config.ini", &attrib);
+    stat(configApp->configFile, &attrib);
     strftime(date, 20, "%d-%m-%y %H:%M:%S", localtime(&(attrib.st_ctime)));
 
     fprintf(configFile, "#CHANGE AT: %s\n\n", date);
@@ -207,6 +229,8 @@ char *getColorSelection(Config configApp)
     }
 }
 
+// GETTERS
+
 uint8_t getTypeMenu(Config configApp)
 {
 
@@ -217,6 +241,54 @@ uint8_t getTypeMenu(Config configApp)
     }
 
     return configApp->typeMenu;
+}
+
+char *getCsvResutlsDir(Config configApp)
+{
+
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->dirCsvsResults;
+}
+
+char *getPloterResutlsDir(Config configApp)
+{
+
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->dirPloters;
+}
+
+char *getPathCsvEntrDir(Config configApp)
+{
+
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->dirsCsvEntrenamiento;
+}
+
+char *getConfigFilePath(Config configApp)
+{
+
+    if (!configApp)
+    {
+        fprintf(stderr, "ERROR: %s %d %d", __FILE__, __LINE__, EMPTY_STRUCT);
+        exit(EMPTY_STRUCT);
+    }
+
+    return configApp->configFile;
 }
 
 // SETTERS
@@ -365,4 +437,30 @@ static ERRORS_CODE checkConfig(Config configApp)
         configApp->numColor = 3;
 
     return ERROR_OK;
+}
+
+static char *createDynamicPath(char *fileOrDir, char *userPath)
+{
+
+    char newPath[BUFSIZ];
+    uint8_t numSlashes = 0;
+
+    for (uint8_t i = 0; i < strlen(userPath); i++)
+    {
+        if (userPath[i] == '/')
+            numSlashes++;
+    }
+
+    if (numSlashes == 1)
+        sprintf(newPath, "../%s", fileOrDir);
+
+    else if (numSlashes == 2)
+        return fileOrDir;
+
+    else
+        sprintf(newPath, "./Covid-Predictions/%s", fileOrDir);
+
+    puts(newPath);
+    puts(userPath);
+    return strdup(newPath);
 }

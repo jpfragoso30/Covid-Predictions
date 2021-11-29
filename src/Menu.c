@@ -1,7 +1,7 @@
 #include "../libs/Menu.h"
 
 static ERRORS_CODE validateFile(const char *fileName);
-static ERRORS_CODE createMenuFiles(Menu menu);
+static ERRORS_CODE createMenuFiles(Menu menu, char *path);
 
 struct _Menu
 {
@@ -56,7 +56,7 @@ Menu freeMenu(Menu menuToFree)
 
 // SETTERS
 
-ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu)
+ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu, char *userPath)
 {
 
     const char *list[4][7] = {
@@ -74,7 +74,7 @@ ERRORS_CODE setMenuOptions(Menu menu, TYPEMENU typemenu)
     menu->numOptions = 0;
 
     if (typemenu == MENU_REPLOT_FILE)
-        createMenuFiles(menu);
+        createMenuFiles(menu, userPath);
     else
     {
 
@@ -183,7 +183,7 @@ void printHeader(void)
 
 // STATICS
 
-static ERRORS_CODE createMenuFiles(Menu menu)
+static ERRORS_CODE createMenuFiles(Menu menu, char *path)
 {
 
     DIR *dr = NULL;
@@ -195,7 +195,7 @@ static ERRORS_CODE createMenuFiles(Menu menu)
         exit(EMPTY_STRUCT);
     }
 
-    dr = opendir("./Covid-Predictions/CsvResults/");
+    dr = opendir(path);
 
     if (dr == NULL)
     {

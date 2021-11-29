@@ -6,10 +6,10 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <ctype.h>
-#include "Menu.h"
 #include "Errors.h"
 #include "CsvProcessing.h"
 #include "Memory.h"
+#include "Menu.h"
 #include "Euler.h"
 #include "Config.h"
 #include "Ploter.h"
@@ -31,11 +31,10 @@ typedef enum states
 } STATES;
 
 // Constructor
-PF initPF(uint8_t endValue, float width);
+PF initPF(uint8_t endValue, float width, char *userPath);
 
 // Destructor
 PF freePF(PF PfToFree);
-
 
 // SETTERS
 ERRORS_CODE setValueInTiempo(PF pf, float newValue, uint8_t index);
@@ -44,7 +43,6 @@ ERRORS_CODE setTiempoCero(PF pf, float xCero);
 ERRORS_CODE setYCero(PF pf, float yCero);
 ERRORS_CODE setNextState(PF pf, STATES newProcess);
 ERRORS_CODE setOptionFromState(PF pf);
-
 
 // GETTERS
 float *getTiempo(PF pf);
@@ -61,5 +59,6 @@ Config getConfigStruct(PF pf);
 ERRORS_CODE controlador(PF pf);
 
 //REINICIA LA APP
-void restartApp(PF pf, char* nameExecutable);
+void restartApp(PF pf, char *nameExcutable, char *configFilePath);
+
 #endif

@@ -1,6 +1,7 @@
 #include "../libs/Ploter.h"
 
 static char *createCommandPlot(const char *nameFile, uint8_t typeCommand);
+static char *createCommandOpenPlot(char *filePlot);
 
 ERRORS_CODE plotResults(char *plotFileName, char *csvFileName, float *x, float *y, uint8_t rows)
 {
@@ -13,6 +14,8 @@ ERRORS_CODE plotResults(char *plotFileName, char *csvFileName, float *x, float *
     fprintf(ploterFile, "%s", createCommandPlot(NULL, 3));
 
     ploterFile = closePloterFile(ploterFile);
+
+    system(createCommandOpenPlot(plotFileName));
 
     return ERROR_OK;
 }
@@ -46,4 +49,13 @@ static char *createCommandPlot(const char *nameFile, uint8_t typeCommand)
     }
 
     return strdup(commands);
+}
+
+static char *createCommandOpenPlot(char *filePlot)
+{
+
+    char command[BUFSIZ];
+    sprintf(command, "open %s", filePlot);
+
+    return strdup(command);
 }
