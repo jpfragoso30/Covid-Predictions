@@ -39,7 +39,7 @@ reintegrando la convivencia social.
 
 -   [x] Se lee un archivo .csv con las aplicaciones de vacunas y otro con las muertes.
 -   [x] Los datos son leídos en el DataShell.
--   [] Los datos son procesados con ecuaciones de Euler.
+-   [ ] Los datos son procesados con ecuaciones de Euler.
 -   [x] Se genera un archivo .csv con los resultados.
 -   [x] Los resultados son graficados para ser visualizados con facilidad.
 
@@ -56,16 +56,16 @@ para ejecutar la aplicacion sin tener que realizar todos los comandos previos.
 ### Modo Semi-Automatizado
 
 Para eliminar el posible cache guardado al compilar en un usuario diferente
-`clearCache`
+`clearCache`.
 
 Para eliminar otros archivos generados por la compilacion
-`clean`
+`clean`.
 
 Para compilar y generar el ejecutable
-`compile`
+`compile`.
 
 Para ejecutar la aplicacion
-`execute`
+`execute`.
 
 ### Modo Manual
 
