@@ -56,16 +56,16 @@ para ejecutar la aplicacion sin tener que realizar todos los comandos previos.
 ### Modo Semi-Automatizado
 
 Para eliminar el posible cache guardado al compilar en un usuario diferente
-`clearCache`.
+`make clearCache`.
 
 Para eliminar otros archivos generados por la compilacion
-`clean`.
+`make clean`.
 
 Para compilar y generar el ejecutable
-`compile`.
+`make compile`.
 
 Para ejecutar la aplicacion
-`execute`.
+`make execute`.
 
 ### Modo Manual
 
