@@ -86,3 +86,6 @@ para poder realizar los comandos que usamos previamente
 
 Esto deberia generar el ejecutable, que se puede ejecutar con
 `./COVID_PREDICTIONS`.
+
+### Documentacion
+https://docs.google.com/document/d/1P0O0_q3sPRlncjsWMo1ecGuPVoOq8769YW-r99BYwKM/edit?usp=sharing
